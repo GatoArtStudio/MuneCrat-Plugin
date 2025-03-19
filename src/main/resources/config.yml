@@ -1,0 +1,8 @@
+# Config for Discord bot
+discord:
+  bot:
+    # Create a bot at https://discord.com/developers/applications or https://discord.com/developers/applications?new_application=true
+    name: name_discord_bot
+    token: token_discord_bot
+    clientId: null
+    clientSecret: null

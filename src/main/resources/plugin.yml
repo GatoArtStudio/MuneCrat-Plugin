@@ -1,4 +1,8 @@
-name: munecraft
-version: '1.0-SNAPSHOT'
+name: ${name}
+version: ${version}
 main: com.github.gatoartstudios.munecraft.Munecraft
 api-version: '1.21'
+authors:
+  - gatoartstudio
+folia-supported: true
+load: STARTUP
