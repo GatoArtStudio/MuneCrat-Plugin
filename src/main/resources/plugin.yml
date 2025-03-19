@@ -1,0 +1,4 @@
+name: munecraft
+version: '1.0-SNAPSHOT'
+main: com.github.gatoartstudios.munecraft.Munecraft
+api-version: '1.21'
