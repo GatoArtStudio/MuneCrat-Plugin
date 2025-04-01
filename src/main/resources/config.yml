@@ -1,4 +1,4 @@
-# Config for Discord bot
+# Configuration for Discord bot
 discord:
   bot:
     # Create a bot at https://discord.com/developers/applications or https://discord.com/developers/applications?new_application=true
@@ -6,3 +6,11 @@ discord:
     token: token_discord_bot
     clientId: null
     clientSecret: null
+database:
+  host: localhost
+  port: 3306
+  database: database_discord_bot
+  username: username_discord_bot
+  password: password_discord_bot
+  # Specify the database type: mysql or mariadb
+  type: mysql

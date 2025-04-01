@@ -6,3 +6,10 @@ authors:
   - gatoartstudio
 folia-supported: true
 load: STARTUP
+commands:
+  development:
+    description: 'Starts the server in development mode'
+    usage: '/development <subcommand>'
+    aliases:
+      - dev
+    permission: munecraft.development
