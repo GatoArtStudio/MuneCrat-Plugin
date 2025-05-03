@@ -79,7 +79,7 @@ public class HandlesPlayerEvents implements Listener {
         Component message = Component.text("[STAFF] ")
                 .color(TextColor.color(255, 0, 0))
                 .append(
-                        Component.text(" -> ")
+                        Component.text( event.getPlayer().getName() + " ")
                                 .color(TextColor.color(0, 255, 255))
                 )
                 .append(
