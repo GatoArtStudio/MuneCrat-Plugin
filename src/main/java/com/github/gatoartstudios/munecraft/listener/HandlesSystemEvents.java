@@ -5,8 +5,8 @@ import com.github.gatoartstudios.munecraft.core.event.EventDispatcher;
 import com.github.gatoartstudios.munecraft.core.event.EventListener;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
 import com.github.gatoartstudios.munecraft.helpers.Utils;
-import com.github.gatoartstudios.munecraft.models.Discord;
 import com.github.gatoartstudios.munecraft.models.DiscordChannels;
+import com.github.gatoartstudios.munecraft.models.GuildDiscordModel;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class HandlesSystemEvents extends EventListener {
     private JDA discordBot;
-    private Munecraft plugin;
+    private final Munecraft plugin;
 
     // The Long key corresponds to the guildId, and the DiscordChannels an object with TextChannel
     private final Map<Long, DiscordChannels> channels = new HashMap<>();
@@ -58,7 +58,7 @@ public class HandlesSystemEvents extends EventListener {
      */
 
     @Override
-    public void onBotUpdate(Discord discord) {
+    public void onBotUpdate(GuildDiscordModel discord) {
         long guildId = discord.getGuildId();
 
         LoggerCustom.info("Receiving data from Discord..." + guildId);
@@ -71,31 +71,31 @@ public class HandlesSystemEvents extends EventListener {
         // Create a DiscordChannels object to store the channels for this guild
         DiscordChannels discordChannels = new DiscordChannels();
 
-        if (discord.getLogChannelId() != 0) {
+        if (discord.getLogChannelId() != null) {
             discordChannels.setLogChannel(discordBot.getTextChannelById(discord.getLogChannelId()));
         }
-        if (discord.getWarningChannelId() != 0) {
+        if (discord.getWarningChannelId() != null) {
             discordChannels.setWarningChannel(discordBot.getTextChannelById(discord.getWarningChannelId()));
         }
-        if (discord.getAnnouncementChannelId() != 0) {
+        if (discord.getAnnouncementChannelId() != null) {
             discordChannels.setAnnouncementChannel(discordBot.getTextChannelById(discord.getAnnouncementChannelId()));
         }
-        if (discord.getSanctionChannelId() != 0) {
+        if (discord.getSanctionChannelId() != null) {
             discordChannels.setSanctionChannel(discordBot.getTextChannelById(discord.getSanctionChannelId()));
         }
-        if (discord.getReportChannelId() != 0) {
+        if (discord.getReportChannelId() != null) {
             discordChannels.setReportChannel(discordBot.getTextChannelById(discord.getReportChannelId()));
         }
-        if (discord.getMessageChannelId() != 0) {
+        if (discord.getMessageChannelId() != null) {
             discordChannels.setMessageChannel(discordBot.getTextChannelById(discord.getMessageChannelId()));
         }
-        if (discord.getCommandChannelId() != 0) {
+        if (discord.getCommandChannelId() != null) {
             discordChannels.setCommandChannel(discordBot.getTextChannelById(discord.getCommandChannelId()));
         }
-        if (discord.getAlertChannelId() != 0) {
+        if (discord.getAlertChannelId() != null) {
             discordChannels.setAlertChannel(discordBot.getTextChannelById(discord.getAlertChannelId()));
         }
-        if (discord.getPlayerActivityChannelId() != 0) {
+        if (discord.getPlayerActivityChannelId() != null) {
             discordChannels.setPlayerActivityChannel(discordBot.getTextChannelById(discord.getPlayerActivityChannelId()));
         }
 
@@ -133,10 +133,6 @@ public class HandlesSystemEvents extends EventListener {
         for (DiscordChannels discordChannels : channels.values()) {
             if (discordChannels.getCommandChannel() != null) {
                 discordChannels.getCommandChannel().sendMessageEmbeds(messageEmbed).queue();
-            }
-
-            if (discordChannels.getPlayerActivityChannel() != null && !discordChannels.getPlayerActivityChannel().equals(discordChannels.getCommandChannel())) {
-                discordChannels.getPlayerActivityChannel().sendMessageEmbeds(messageEmbed).queue();
             }
         }
     }
@@ -225,8 +221,8 @@ public class HandlesSystemEvents extends EventListener {
         MessageEmbed messageEmbed = embed.build();
 
         for (DiscordChannels discordChannels : channels.values()) {
-            if (discordChannels.getPlayerActivityChannel() != null) {
-                discordChannels.getPlayerActivityChannel().sendMessageEmbeds(messageEmbed).queue();
+            if (discordChannels.getMessageChannel() != null) {
+                discordChannels.getMessageChannel().sendMessageEmbeds(messageEmbed).queue();
             }
         }
     }

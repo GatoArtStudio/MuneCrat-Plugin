@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @param <T> The type of object to be stored in the database.
  */
-public interface ICrud<T> {
+public interface ICrud<ID, T> {
     /**
      * Creates a new record in the database.
      *
@@ -22,7 +22,7 @@ public interface ICrud<T> {
      * @param id The ID of the record to be retrieved.
      * @return The object retrieved from the database.
      */
-    T read(long id);
+    T read(ID id);
 
     /**
      * Updates an existing record in the database.
@@ -36,7 +36,7 @@ public interface ICrud<T> {
      *
      * @param id The ID of the record to be deleted.
      */
-    void delete(long id);
+    void delete(ID id);
 
     /**
      * Retrieves all records from the database.

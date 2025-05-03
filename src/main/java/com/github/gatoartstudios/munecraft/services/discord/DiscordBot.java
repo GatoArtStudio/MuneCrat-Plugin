@@ -1,4 +1,4 @@
-package com.github.gatoartstudios.munecraft.services;
+package com.github.gatoartstudios.munecraft.services.discord;
 
 import com.github.gatoartstudios.munecraft.Munecraft;
 import com.github.gatoartstudios.munecraft.config.ConfigManager;
@@ -6,10 +6,11 @@ import com.github.gatoartstudios.munecraft.core.event.EventDispatcher;
 import com.github.gatoartstudios.munecraft.core.event.EventListener;
 import com.github.gatoartstudios.munecraft.core.implement.ServiceThread;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
-import com.github.gatoartstudios.munecraft.listener.AdminDiscordCommand;
-import com.github.gatoartstudios.munecraft.listener.ModerationMinecraftDiscordCommands;
-import com.github.gatoartstudios.munecraft.listener.OnReadyDiscord;
-import com.github.gatoartstudios.munecraft.listener.StatusCommandDiscord;
+import com.github.gatoartstudios.munecraft.services.discord.command.AdminDiscordCommand;
+import com.github.gatoartstudios.munecraft.services.discord.command.ModerationMinecraftDiscordCommands;
+import com.github.gatoartstudios.munecraft.services.discord.listener.LogCommandExecuted;
+import com.github.gatoartstudios.munecraft.services.discord.listener.OnReadyDiscord;
+import com.github.gatoartstudios.munecraft.services.discord.command.StatusCommandDiscord;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -60,7 +61,8 @@ public class DiscordBot extends ServiceThread {
                         new OnReadyDiscord(),
                         new AdminDiscordCommand(),
                         new StatusCommandDiscord(),
-                        new ModerationMinecraftDiscordCommands()
+                        new ModerationMinecraftDiscordCommands(),
+                        new LogCommandExecuted()
                 )
                 .setActivity(Activity.playing("Muñecraft"))
                 .build();

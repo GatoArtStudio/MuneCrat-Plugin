@@ -2,9 +2,8 @@ package com.github.gatoartstudios.munecraft.core.event;
 
 import com.github.gatoartstudios.munecraft.core.enums.EventType;
 import com.github.gatoartstudios.munecraft.databases.DatabaseManager;
-import com.github.gatoartstudios.munecraft.models.Discord;
+import com.github.gatoartstudios.munecraft.models.GuildDiscordModel;
 import net.dv8tion.jda.api.JDA;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class EventDispatcher {
@@ -22,7 +21,7 @@ public class EventDispatcher {
         eventManager.emit(EventType.BOT_READY, discordBot);
     }
 
-    public static void dispatchBotUpdate(Discord discord) {
+    public static void dispatchBotUpdate(GuildDiscordModel discord) {
         eventManager.emit(EventType.BOT_UPDATE, discord);
     }
 
@@ -76,5 +75,9 @@ public class EventDispatcher {
 
     public static void dispatchExecuteServerCommandResult(Boolean status, String message) {
         eventManager.emit(EventType.EXECUTE_SERVER_COMMAND_RESULT, status, message);
+    }
+
+    public static void dispatchMessageToMinecraft(String message) {
+        eventManager.emit(EventType.MESSAGE_TO_MINECRAFT, message);
     }
 }

@@ -3,6 +3,7 @@ package com.github.gatoartstudios.munecraft.databases;
 import com.github.gatoartstudios.munecraft.Munecraft;
 import com.github.gatoartstudios.munecraft.core.event.EventDispatcher;
 import com.github.gatoartstudios.munecraft.core.event.EventListener;
+import com.github.gatoartstudios.munecraft.databases.mysql.MySQLConnection;
 import com.github.gatoartstudios.munecraft.models.SQL;
 
 import java.sql.Connection;

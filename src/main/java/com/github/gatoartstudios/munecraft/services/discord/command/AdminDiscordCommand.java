@@ -1,4 +1,4 @@
-package com.github.gatoartstudios.munecraft.listener;
+package com.github.gatoartstudios.munecraft.services.discord.command;
 
 import com.github.gatoartstudios.munecraft.core.enums.EventType;
 import com.github.gatoartstudios.munecraft.core.event.Event;
@@ -6,8 +6,7 @@ import com.github.gatoartstudios.munecraft.core.event.EventDispatcher;
 import com.github.gatoartstudios.munecraft.core.event.EventListener;
 import com.github.gatoartstudios.munecraft.databases.DatabaseManager;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
-import com.github.gatoartstudios.munecraft.models.Discord;
-import com.github.gatoartstudios.munecraft.models.DiscordChannels;
+import com.github.gatoartstudios.munecraft.models.GuildDiscordModel;
 import com.github.gatoartstudios.munecraft.services.ModerationService;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -25,7 +24,7 @@ import java.util.function.Consumer;
 
 public class AdminDiscordCommand extends ListenerAdapter {
     private static DatabaseManager databaseManager;
-    private static Map<Long, Discord> discordConfigs = new HashMap<>();
+    private static Map<Long, GuildDiscordModel> discordConfigs = new HashMap<>();
 
     public AdminDiscordCommand() {
         new Events();
@@ -34,10 +33,13 @@ public class AdminDiscordCommand extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
 
-        LoggerCustom.debug("Comando recibido en AdminDiscordCommand: " + event.getName());
+        String subcommandName = event.getSubcommandName();
+        String subcommandGroup = event.getSubcommandGroup();
 
+        // In this conditional, we check if the received command is equal to 'admin'; if it is not, we return.
         if (!event.getName().equals("admin")) return;
 
+        // We check whether the event was triggered by a user or not, and then we verify if they have the necessary permissions to use the command.
         if (event.getMember() != null) {
             if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
                 event.reply("No tienes permiso para usar este comando").setEphemeral(true).queue();
@@ -46,9 +48,7 @@ public class AdminDiscordCommand extends ListenerAdapter {
             }
         }
 
-        String subcommandName = event.getSubcommandName();
-        String subcommandGroup = event.getSubcommandGroup();
-
+        // We check whether a subcommand is present—either 'set' or 'get'—in order to apply the corresponding procedure.
         if (subcommandGroup != null) {
             switch (event.getSubcommandGroup()) {
                 case "set":
@@ -64,76 +64,92 @@ public class AdminDiscordCommand extends ListenerAdapter {
             return;
         }
 
-        if (subcommandName != null) {
-            switch (event.getSubcommandName()) {
-                case "playerlist":
-                    List<String> onlinePlayers = ModerationService.getOnlinePlayers();
-                    if (onlinePlayers.isEmpty()) {
-                        event.reply("No hay jugadores en linea").setEphemeral(true).queue();
-                        break;
-                    }
-
-                    event.reply("Jugadores en Linea: " + String.join(", ", onlinePlayers)).setEphemeral(true).queue();
-                    break;
-                case "console":
-
-                    // Enviamos respuesta inmediata para evitar el timeout
-                    event.reply("Ejecutando comando...").setEphemeral(true).queue(interactionHook -> {
-                        // Ejecutamos el evento para ejecutar el comando
-                        EventDispatcher.dispatchExecuteServerCommand(event.getOption("command").getAsString());
-
-                        // Escuchamos el evento para obtener el resultado
-                        Event eventManager = Event.getInstance();
-
-                        Consumer<Object[]> listener = new Consumer<Object[]>() {
-                            @Override
-                            public void accept(Object[] objects) {
-                                Boolean status = (Boolean) objects[0];
-                                String message = (String) objects[1];
-                                String s = status ? "Exitoso" : "Fallido";
-
-                                // Editamos el mensaje inicial en lugar de hacer un nuevo replay
-                                interactionHook.editOriginal("Comando ejecutado " + s).queue();
-
-                                // Remove listener
-                                eventManager.removeListener(EventType.EXECUTE_SERVER_COMMAND_RESULT, this);
-                            }
-                        };
-
-                        eventManager.addListener(EventType.EXECUTE_SERVER_COMMAND_RESULT, listener);
-                    });
-                    break;
-                case "config":
-                    Discord discordConfig = discordConfigs.get(Objects.requireNonNull(event.getGuild()).getIdLong());
-
-                    if (discordConfig == null) {
-                        event.reply("No se encontraron configuraciones para este servidor").setEphemeral(true).queue();
-                        break;
-                    }
-
-                    EmbedBuilder embed = new EmbedBuilder()
-                            .setTitle("Configuración del bot")
-                            .setColor(Color.CYAN)
-                            .addField("Log Channel", "<#" + discordConfig.getLogChannelId() + ">", false)
-                            .addField("Warning Channel", "<#" + discordConfig.getWarningChannelId() + ">", false)
-                            .addField("Announcement Channel", "<#" + discordConfig.getAnnouncementChannelId() + ">", false)
-                            .addField("Sanction Channel", "<#" + discordConfig.getSanctionChannelId() + ">", false)
-                            .addField("Report Channel", "<#" + discordConfig.getReportChannelId() + ">", false)
-                            .addField("Message Channel", "<#" + discordConfig.getMessageChannelId() + ">", false)
-                            .addField("Command Channel", "<#" + discordConfig.getCommandChannelId() + ">", false)
-                            .addField("Alert Channel", "<#" + discordConfig.getAlertChannelId() + ">", false)
-                            .addField("Player Activity Channel", "<#" + discordConfig.getPlayerActivityChannelId() + ">", false);
-
-                    event.replyEmbeds(embed.build()).queue();
-                    break;
-                case null, default:
-                    LoggerCustom.warning("SubcommandName no reconocido: " + event.getSubcommandName());
-                    break;
-            }
+        if (subcommandName == null) {
             return;
         }
 
-        event.reply("Comando no reconocido").setEphemeral(true).queue();
+        // We apply other logic if subcommands are available.
+        switch (event.getSubcommandName()) {
+
+            case "message":
+                String message = Objects.requireNonNull(event.getOption("message")).getAsString();
+                if (message.isEmpty()) {
+                    event.reply("El mensaje no puede estar vacio").setEphemeral(true).queue();
+                    break;
+                }
+                EventDispatcher.dispatchMessageToMinecraft(message);
+                event.reply("Mensaje enviado").setEphemeral(true).queue();
+                break;
+
+            case "playerlist":
+                List<String> onlinePlayers = ModerationService.getOnlinePlayers();
+                if (onlinePlayers.isEmpty()) {
+                    event.reply("No hay jugadores en linea").setEphemeral(true).queue();
+                    break;
+                }
+
+                event.reply("Jugadores en Linea: " + String.join(", ", onlinePlayers)).setEphemeral(true).queue();
+                break;
+
+            case "console":
+
+                // Enviamos respuesta inmediata para evitar el timeout
+                event.reply("Ejecutando comando...").setEphemeral(true).queue(interactionHook -> {
+                    // Ejecutamos el evento para ejecutar el comando
+                    EventDispatcher.dispatchExecuteServerCommand(event.getOption("command").getAsString());
+
+                    // Escuchamos el evento para obtener el resultado
+                    Event eventManager = Event.getInstance();
+
+                    Consumer<Object[]> listener = new Consumer<Object[]>() {
+                        @Override
+                        public void accept(Object[] objects) {
+                            Boolean status = (Boolean) objects[0];
+                            String message = (String) objects[1];
+                            String s = status ? "Exitoso" : "Fallido";
+
+                            // Editamos el mensaje inicial en lugar de hacer un nuevo replay
+                            interactionHook.editOriginal("Comando ejecutado " + s).queue();
+
+                            // Remove listener
+                            eventManager.removeListener(EventType.EXECUTE_SERVER_COMMAND_RESULT, this);
+                        }
+                    };
+
+                    eventManager.addListener(EventType.EXECUTE_SERVER_COMMAND_RESULT, listener);
+                });
+                break;
+
+            case "config":
+                GuildDiscordModel discordConfig = discordConfigs.get(Objects.requireNonNull(event.getGuild()).getIdLong());
+
+                if (discordConfig == null) {
+                    event.reply("No se encontraron configuraciones para este servidor").setEphemeral(true).queue();
+                    break;
+                }
+
+                EmbedBuilder embed = new EmbedBuilder()
+                        .setTitle("Configuración del bot")
+                        .setColor(Color.CYAN)
+                        .addField("Log Channel", "<#" + discordConfig.getLogChannelId() + ">", false)
+                        .addField("Warning Channel", "<#" + discordConfig.getWarningChannelId() + ">", false)
+                        .addField("Announcement Channel", "<#" + discordConfig.getAnnouncementChannelId() + ">", false)
+                        .addField("Sanction Channel", "<#" + discordConfig.getSanctionChannelId() + ">", false)
+                        .addField("Report Channel", "<#" + discordConfig.getReportChannelId() + ">", false)
+                        .addField("Message Channel", "<#" + discordConfig.getMessageChannelId() + ">", false)
+                        .addField("Command Channel", "<#" + discordConfig.getCommandChannelId() + ">", false)
+                        .addField("Alert Channel", "<#" + discordConfig.getAlertChannelId() + ">", false)
+                        .addField("Player Activity Channel", "<#" + discordConfig.getPlayerActivityChannelId() + ">", false);
+
+                event.replyEmbeds(embed.build()).queue();
+                break;
+
+            case null, default:
+                LoggerCustom.warning("SubcommandName no reconocido: " + event.getSubcommandName());
+                break;
+        }
+
+        return;
     }
 
     private static class Events extends EventListener {
@@ -143,7 +159,7 @@ public class AdminDiscordCommand extends ListenerAdapter {
         }
 
         @Override
-        public void onBotUpdate(Discord discord) {
+        public void onBotUpdate(GuildDiscordModel discord) {
             discordConfigs.put(discord.getGuildId(), discord);
         }
     }
@@ -151,10 +167,10 @@ public class AdminDiscordCommand extends ListenerAdapter {
     private void handleSetCommand(SlashCommandInteractionEvent event) {
         String subcommand = event.getSubcommandName();
         TextChannel channel = event.getOption("channel").getAsChannel().asTextChannel();
-        Discord discordConfig = discordConfigs.get(Objects.requireNonNull(event.getGuild()).getIdLong());
+        GuildDiscordModel discordConfig = discordConfigs.get(Objects.requireNonNull(event.getGuild()).getIdLong());
 
         if (discordConfig == null) {
-            discordConfig = new Discord();
+            discordConfig = new GuildDiscordModel();
             discordConfig.setGuildId(event.getGuild().getIdLong());
         }
 
@@ -205,6 +221,8 @@ public class AdminDiscordCommand extends ListenerAdapter {
                 EventDispatcher.dispatchBotUpdate(discordConfig);
                 event.reply("Canal de actividad de jugadores establecido en: " + channel.getAsMention()).queue();
                 break;
+            case null:
+                break;
             default:
                 event.reply("Subcomando desconocido.").setEphemeral(true).queue();
         }
@@ -212,7 +230,7 @@ public class AdminDiscordCommand extends ListenerAdapter {
 
     private void handleGetCommand(SlashCommandInteractionEvent event) {
         String subcommand = event.getSubcommandName();
-        Discord discordConfig = discordConfigs.get(Objects.requireNonNull(event.getGuild()).getIdLong());
+        GuildDiscordModel discordConfig = discordConfigs.get(Objects.requireNonNull(event.getGuild()).getIdLong());
 
         if (discordConfig == null) {
             event.reply("No se encontraron configuraciones para este servidor").setEphemeral(true).queue();

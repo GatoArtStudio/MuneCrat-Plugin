@@ -1,4 +1,4 @@
-package com.github.gatoartstudios.munecraft.databases;
+package com.github.gatoartstudios.munecraft.databases.mysql;
 
 import com.github.gatoartstudios.munecraft.core.event.EventDispatcher;
 import com.github.gatoartstudios.munecraft.models.SQL;

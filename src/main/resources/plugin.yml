@@ -6,6 +6,7 @@ authors:
   - gatoartstudio
 folia-supported: true
 load: STARTUP
+
 commands:
   development:
     description: 'Starts the server in development mode'
@@ -13,3 +14,52 @@ commands:
     aliases:
       - dev
     permission: munecraft.development
+  staff:
+    description: "Toggles staff mode"
+    usage: '/staff'
+    permission: munecraft.staff
+  staffchat:
+    description: "Toggles staff chat"
+    usage: '/staffchat'
+    permission: munecraft.staffchat
+
+permissions:
+  munecraft.staff:
+    description: Permits access to staff commands
+    default: op
+  munecraft.staff.op:
+    description: Allow access to have op when using the staff command
+    default: op
+  munecraft.staffchat:
+    description: Allows access to staff chat
+    default: op
+  munecraft.development:
+    description: Allows access to development commands
+    default: op
+  munecraft.grave.saveinventory:
+    description: Allows saving inventory on death
+    default: true
+  munecraft.grave.respawnhere:
+    description: Allows respawning at the death location
+    default: false
+  munecraft.grave.public:
+    description: Allows making graves public
+    default: true
+  munecraft.grave.duration:
+    description: Allows setting the duration of graves
+    default: true
+  munecraft.grave.duration.1:
+    description: Sets grave duration to 1 hour
+    default: true
+  munecraft.grave.duration.2:
+    description: Sets grave duration to 2 hours
+    default: true
+  munecraft.grave.duration.3:
+    description: Sets grave duration to 3 hours
+    default: true
+  munecraft.grave.duration.4:
+    description: Sets grave duration to 4 hours
+    default: true
+  munecraft.grave.duration.5:
+    description: Sets grave duration to 5 hours
+    default: true

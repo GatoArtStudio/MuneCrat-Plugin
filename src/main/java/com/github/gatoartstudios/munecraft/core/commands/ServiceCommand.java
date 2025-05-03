@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ServiceComman implements ICommand {
+public class ServiceCommand implements ICommand {
     /**
      * A list of services to be executed in the enable method.
      */

@@ -1,6 +1,5 @@
-package com.github.gatoartstudios.munecraft.listener;
+package com.github.gatoartstudios.munecraft.services.discord.command;
 
-import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
 import com.github.gatoartstudios.munecraft.services.ModerationService;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -20,8 +19,6 @@ public class ModerationMinecraftDiscordCommands extends ListenerAdapter {
      */
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-
-        LoggerCustom.debug("Command received in ModerationMinecraftDiscordCommands: " + event.getName());
 
         // Display the list of players on the Minecraft server
         if (event.getName().equals("playerlist")) {

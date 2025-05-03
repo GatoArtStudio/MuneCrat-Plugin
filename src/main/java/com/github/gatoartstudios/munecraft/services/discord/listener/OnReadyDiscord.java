@@ -1,11 +1,11 @@
-package com.github.gatoartstudios.munecraft.listener;
+package com.github.gatoartstudios.munecraft.services.discord.listener;
 
 import com.github.gatoartstudios.munecraft.core.event.EventDispatcher;
 import com.github.gatoartstudios.munecraft.core.event.EventListener;
 import com.github.gatoartstudios.munecraft.databases.DatabaseManager;
-import com.github.gatoartstudios.munecraft.databases.MySQLDiscordDAO;
+import com.github.gatoartstudios.munecraft.databases.mysql.DAO.MySQLGuildDiscordDAO;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
-import com.github.gatoartstudios.munecraft.models.Discord;
+import com.github.gatoartstudios.munecraft.models.GuildDiscordModel;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -30,15 +30,15 @@ public class OnReadyDiscord extends ListenerAdapter {
         event.getJDA().updateCommands().addCommands(
                 // Comando para ver el estado del bot, clase que maneja este comando es StatusCommandDiscord
                 Commands.slash("status", "Check if the bot is online"),
-                // Comando para ver la lista de jugadores en linea, clase que maneja este comando es ModerationMinecraftDiscordCommands
-                Commands.slash("playerlist", "Retorna la lista de jugadores en linea"),
                 // Comando para ver la configuración del bot, clase que maneja este comando es AdminDiscordCommand
                 Commands.slash("admin", "Comandos de admin")
                         .addSubcommands(
                                 new SubcommandData("playerlist", "Retorna la lista de jugadores en linea"),
                                 new SubcommandData("config", "Retorna la configuración del bot"),
                                 new SubcommandData("console", "Ejecuta un comando en la consola del servidor")
-                                        .addOption(OptionType.STRING, "command", "Comando a ejecutar, no debe incluir / el comando.", true)
+                                        .addOption(OptionType.STRING, "command", "Comando a ejecutar, no debe incluir / el comando.", true),
+                                new SubcommandData("message", "Envia un mensaje al servidor de Minecraft.")
+                                        .addOption(OptionType.STRING, "message", "Mensaje a enviar", true)
                         )
                         .addSubcommandGroups(
                                 new SubcommandGroupData("set", "Asigna un canal de texto")
@@ -85,7 +85,7 @@ public class OnReadyDiscord extends ListenerAdapter {
     private static class Events extends EventListener {
         private DatabaseManager databaseManager;
         private Connection connection;
-        private MySQLDiscordDAO mySQLDiscordDAO;
+        private MySQLGuildDiscordDAO mySQLGuildDiscord;
 
         /**
          * Constructor of Events, this class is used to listen events of database and bot
@@ -94,10 +94,16 @@ public class OnReadyDiscord extends ListenerAdapter {
             this.databaseManager = DatabaseManager.getInstance(null);
             LoggerCustom.info("Database and bot events system initialized and waiting...");
 
-            this.mySQLDiscordDAO = new MySQLDiscordDAO();
-            List<Discord> listDiscordConfig = mySQLDiscordDAO.getAll();
+            this.mySQLGuildDiscord = new MySQLGuildDiscordDAO();
+            List<GuildDiscordModel> listDiscordConfig = mySQLGuildDiscord.getAll();
 
-            EventDispatcher.dispatchBotUpdate(listDiscordConfig.get(0));
+            if (listDiscordConfig.isEmpty()) {
+                LoggerCustom.info("No discord config found in database");
+            } else {
+                for (GuildDiscordModel discordConfig : listDiscordConfig) {
+                    EventDispatcher.dispatchBotUpdate(discordConfig);
+                }
+            }
         }
 
         @Override
@@ -105,18 +111,18 @@ public class OnReadyDiscord extends ListenerAdapter {
             this.databaseManager = databaseManager;
             connection = databaseManager.getConnection();
 
-            // Create a new instance of MySQLDiscordDAO, is CRUD for Discord
-            this.mySQLDiscordDAO = new MySQLDiscordDAO();
-            List<Discord> listConfigDiscord = mySQLDiscordDAO.getAll();
+            // Create a new instance of MySQLGuildDiscordDAO, is CRUD for Discord
+            this.mySQLGuildDiscord = new MySQLGuildDiscordDAO();
+            List<GuildDiscordModel> listConfigDiscord = mySQLGuildDiscord.getAll();
 
             if (listConfigDiscord.isEmpty()) {
                 LoggerCustom.info("No discord config found in database");
                 return;
             }
 
-            Discord discord = listConfigDiscord.get(0);
-
-            EventDispatcher.dispatchBotUpdate(discord);
+            for (GuildDiscordModel discord : listConfigDiscord) {
+                EventDispatcher.dispatchBotUpdate(discord);
+            }
         }
 
         @Override
@@ -124,32 +130,32 @@ public class OnReadyDiscord extends ListenerAdapter {
             this.databaseManager = databaseManager;
             connection = databaseManager.getConnection();
 
-            // Create a new instance of MySQLDiscordDAO, is CRUD for Discord
-            this.mySQLDiscordDAO = new MySQLDiscordDAO();
-            List<Discord> listConfigDiscord = mySQLDiscordDAO.getAll();
+            // Create a new instance of MySQLGuildDiscordDAO, is CRUD for Discord
+            this.mySQLGuildDiscord = new MySQLGuildDiscordDAO();
+            List<GuildDiscordModel> listConfigDiscord = mySQLGuildDiscord.getAll();
 
             if (listConfigDiscord.isEmpty()) {
                 LoggerCustom.info("No discord config found in database");
                 return;
             }
 
-            Discord discord = listConfigDiscord.get(0);
-
-            EventDispatcher.dispatchBotUpdate(discord);
+            for (GuildDiscordModel discord : listConfigDiscord) {
+                EventDispatcher.dispatchBotUpdate(discord);
+            }
         }
 
         @Override
-        public void onBotUpdate(Discord discord) {
-            if (mySQLDiscordDAO == null) {
-                this.mySQLDiscordDAO = new MySQLDiscordDAO();
+        public void onBotUpdate(GuildDiscordModel discord) {
+            if (mySQLGuildDiscord == null) {
+                this.mySQLGuildDiscord = new MySQLGuildDiscordDAO();
             }
 
-            Discord discordConfig = mySQLDiscordDAO.read(discord.getGuildId());
+            GuildDiscordModel discordConfig = mySQLGuildDiscord.read(discord.getGuildId());
 
             if (discordConfig != null) {
-                mySQLDiscordDAO.update(discord);
+                mySQLGuildDiscord.update(discord);
             } else {
-                mySQLDiscordDAO.create(discord);
+                mySQLGuildDiscord.create(discord);
             }
         }
     }

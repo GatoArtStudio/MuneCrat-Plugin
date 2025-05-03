@@ -3,20 +3,18 @@ package com.github.gatoartstudios.munecraft.core.event;
 import com.github.gatoartstudios.munecraft.core.enums.EventType;
 import com.github.gatoartstudios.munecraft.databases.DatabaseManager;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
-import com.github.gatoartstudios.munecraft.models.Discord;
-import com.github.gatoartstudios.munecraft.services.DiscordBot;
+import com.github.gatoartstudios.munecraft.models.GuildDiscordModel;
 import net.dv8tion.jda.api.JDA;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public abstract class EventListener {
-    private final Event eventManager = Event.getInstance();
 
     public EventListener() {
         LoggerCustom.success("Event listener has been initialized");
         /*
          * Command execute
          */
+        Event eventManager = Event.getInstance();
         eventManager.addListener(EventType.COMMAND_EXECUTE, args -> {
             Player player = (Player) args[0];
             String commandExecuted = (String) args[1];
@@ -31,8 +29,8 @@ public abstract class EventListener {
             onBotReady(discordBot);
         });
         eventManager.addListener(EventType.BOT_UPDATE, args -> {
-            Discord discord = (Discord) args[0];
-            onBotUpdate(discord);
+            GuildDiscordModel guildDiscordModel = (GuildDiscordModel) args[0];
+            onBotUpdate(guildDiscordModel);
         });
         eventManager.addListener(EventType.PLAYER_JOIN, args -> {
             Player player = (Player) args[0];
@@ -87,12 +85,16 @@ public abstract class EventListener {
             String message = (String) args[1];
             onExecuteServerCommandResult(status, message);
         });
+        eventManager.addListener(EventType.MESSAGE_TO_MINECRAFT, args -> {
+            String message = (String) args[0];
+            onMessageToMinecraft(message);
+        });
     }
 
     public void onCommandExecute(Player player, String commandExecuted) {}
     public void onAlert(String message) {}
     public void onBotReady(JDA discordBot) {}
-    public void onBotUpdate(Discord discord) {}
+    public void onBotUpdate(GuildDiscordModel discord) {}
     public void onPlayerJoin(Player player) {}
     public void onPlayerChat(Player player, String message) {}
     public void onPlayerLeave(Player player) {}
@@ -106,4 +108,5 @@ public abstract class EventListener {
     public void onLoaded() {}
     public void onExecuteServerCommand(String commandToExecute) {}
     public void onExecuteServerCommandResult(Boolean status, String message) {}
+    public void onMessageToMinecraft(String message) {}
 }

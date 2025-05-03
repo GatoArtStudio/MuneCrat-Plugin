@@ -2,7 +2,6 @@ package com.github.gatoartstudios.munecraft.models;
 
 public class Discord {
 
-    public static String tableName = "discord";
     private long guildId = 0L;
     private long logChannelId = 0L;
     private long warningChannelId = 0L;
