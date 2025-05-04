@@ -1,26 +1,23 @@
 package com.github.gatoartstudios.munecraft.models;
 
 public class UserDiscordModel {
-    private long idDiscord;
+    private Long idDiscord;
     private String discordName;
     private String password;
     private String minecraftName;
 
-    public UserDiscordModel(long idDiscord, String discordName, String password, String minecraftName) {
+    public UserDiscordModel(Long idDiscord, String discordName, String password, String minecraftName) {
         this.idDiscord = idDiscord;
         this.discordName = discordName;
         this.password = password;
         this.minecraftName = minecraftName;
     }
 
-    public UserDiscordModel() {
-    }
-
-    public long getIdDiscord() {
+    public Long getIdDiscord() {
         return idDiscord;
     }
 
-    public void setIdDiscord(long idDiscord) {
+    public void setIdDiscord(Long idDiscord) {
         this.idDiscord = idDiscord;
     }
 

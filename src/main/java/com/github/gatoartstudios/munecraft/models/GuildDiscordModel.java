@@ -11,8 +11,9 @@ public class GuildDiscordModel {
     private Long commandChannelId = null;
     private Long alertChannelId = null;
     private Long playerActivityChannelId = null;
+    private Long logUserVerifiedId = null;
 
-    public GuildDiscordModel(Long guildId, Long logChannelId, Long warningChannelId, Long announcementChannelId, Long sanctionChannelId, Long reportChannelId, Long messageChannelId, Long commandChannelId, Long alertChannelId, Long playerActivityChannelId) {
+    public GuildDiscordModel(Long guildId, Long logChannelId, Long warningChannelId, Long announcementChannelId, Long sanctionChannelId, Long reportChannelId, Long messageChannelId, Long commandChannelId, Long alertChannelId, Long playerActivityChannelId, Long logUserVerifiedId) {
         this.guildId = guildId;
         this.logChannelId = logChannelId;
         this.warningChannelId = warningChannelId;
@@ -23,6 +24,7 @@ public class GuildDiscordModel {
         this.commandChannelId = commandChannelId;
         this.alertChannelId = alertChannelId;
         this.playerActivityChannelId = playerActivityChannelId;
+        this.logUserVerifiedId = logUserVerifiedId;
     }
 
     public GuildDiscordModel() {
@@ -106,5 +108,13 @@ public class GuildDiscordModel {
 
     public void setPlayerActivityChannelId(Long playerActivityChannelId) {
         this.playerActivityChannelId = playerActivityChannelId;
+    }
+
+    public Long getLogUserVerifiedId() {
+        return logUserVerifiedId;
+    }
+
+    public void setLogUserVerifiedId(Long logUserVerifiedId) {
+        this.logUserVerifiedId = logUserVerifiedId;
     }
 }

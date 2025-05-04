@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `guild_discord` (
     `command_channel_id` BIGINT,
     `alert_channel_id` BIGINT,
     `player_activity_channel_id` BIGINT,
+    `log_user_verified` BIGINT,
     PRIMARY KEY (`guild_id`)
 );
 
@@ -67,8 +68,8 @@ CREATE TABLE IF NOT EXISTS `rol_discord` (
     `isDevelopment` TINYINT(1) NOT NULL,
     `isHelper` TINYINT(1) NOT NULL,
     `isVip` TINYINT(1) NOT NULL,
-    `isBooter` TINYINT(1),
-    `isVerified` TINYINT(1),
+    `isBooter` TINYINT(1) NOT NULL,
+    `isVerified` TINYINT(1) NOT NULL,
     PRIMARY KEY (`id_rol`)
 );
 
@@ -120,6 +121,9 @@ ALTER TABLE player
 
 ALTER TABLE player
     ADD COLUMN IF NOT EXISTS StaffChatMode TINYINT(1) NOT NULL DEFAULT 0;
+
+ALTER TABLE guild_discord
+    ADD COLUMN IF NOT EXISTS log_user_verified BIGINT;
 
 ALTER TABLE user_discord
     ADD FOREIGN KEY (minecraft_name) REFERENCES player(minecraft_name);

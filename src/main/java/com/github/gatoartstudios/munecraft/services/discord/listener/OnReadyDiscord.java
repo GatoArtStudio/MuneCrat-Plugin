@@ -30,6 +30,7 @@ public class OnReadyDiscord extends ListenerAdapter {
         event.getJDA().updateCommands().addCommands(
                 // Comando para ver el estado del bot, clase que maneja este comando es StatusCommandDiscord
                 Commands.slash("status", "Check if the bot is online"),
+                Commands.slash("embed_verified_minecraft", "Establece un embed de verificación de Minecraft"),
                 // Comando para ver la configuración del bot, clase que maneja este comando es AdminDiscordCommand
                 Commands.slash("admin", "Comandos de admin")
                         .addSubcommands(
@@ -60,6 +61,8 @@ public class OnReadyDiscord extends ListenerAdapter {
                                                 new SubcommandData("alert_channel", "Asigna un canal de texto para ver las alertas")
                                                         .addOption(OptionType.CHANNEL, "channel", "Canal de texto", true),
                                                 new SubcommandData("player_activity_channel", "Asigna un canal de texto para ver la actividad de los jugadores")
+                                                        .addOption(OptionType.CHANNEL, "channel", "Canal de texto", true),
+                                                new SubcommandData("log_user_verified", "Asigna un canal de texto para ver los logs de los usuarios verificados")
                                                         .addOption(OptionType.CHANNEL, "channel", "Canal de texto", true)
                                         ),
                                 new SubcommandGroupData("get", "Retorna la configuración del bot")
@@ -72,7 +75,8 @@ public class OnReadyDiscord extends ListenerAdapter {
                                                 new SubcommandData("message_channel", "Retorna el canal de mensajes"),
                                                 new SubcommandData("command_channel", "Retorna el canal de comandos"),
                                                 new SubcommandData("alert_channel", "Retorna el canal de alertas"),
-                                                new SubcommandData("player_activity_channel", "Retorna el canal de actividad de jugadores")
+                                                new SubcommandData("player_activity_channel", "Retorna el canal de actividad de jugadores"),
+                                                new SubcommandData("log_user_verified", "Retorna el canal de logs de usuarios verificados")
                                         )
                         )
         ).queue();

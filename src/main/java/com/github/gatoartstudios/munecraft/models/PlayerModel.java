@@ -64,6 +64,11 @@ public class PlayerModel {
         this.staffChatMode = staffChatMode;
     }
 
+    public PlayerModel(UUID uuid, String minecraftName) {
+        this.uuid = uuid;
+        this.minecraftName = minecraftName;
+    }
+
     public PlayerModel() {
     }
 

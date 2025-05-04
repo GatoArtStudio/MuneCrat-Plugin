@@ -78,7 +78,7 @@ public class AdminDiscordCommand extends ListenerAdapter {
                     break;
                 }
                 EventDispatcher.dispatchMessageToMinecraft(message);
-                event.reply("Mensaje enviado").setEphemeral(true).queue();
+                event.reply("Mensaje enviado a todos los jugadores:" + "`" + message + "`").setEphemeral(true).queue();
                 break;
 
             case "playerlist":
@@ -221,6 +221,11 @@ public class AdminDiscordCommand extends ListenerAdapter {
                 EventDispatcher.dispatchBotUpdate(discordConfig);
                 event.reply("Canal de actividad de jugadores establecido en: " + channel.getAsMention()).queue();
                 break;
+            case "log_user_verified":
+                discordConfig.setLogUserVerifiedId(Long.parseLong(channel.getId()));
+                EventDispatcher.dispatchBotUpdate(discordConfig);
+                event.reply("Canal de usuario verificados establecido en: " + channel.getAsMention()).queue();
+                break;
             case null:
                 break;
             default:
@@ -264,6 +269,9 @@ public class AdminDiscordCommand extends ListenerAdapter {
                 break;
             case "player_activity_channel":
                 event.reply("Canal de actividad de jugadores: <#" + discordConfig.getPlayerActivityChannelId() + ">").setEphemeral(true).queue();
+                break;
+            case "log_user_verified":
+                event.reply("Canal de usuario verificados: <#" + discordConfig.getLogUserVerifiedId() + ">").setEphemeral(true).queue();
                 break;
             default:
                 event.reply("Subcomando desconocido.").setEphemeral(true).queue();

@@ -55,7 +55,7 @@ public class MySQLGuildDiscordDAO implements ICrud<Long, GuildDiscordModel> {
     public void update(GuildDiscordModel entity) {
         String sqlQuery = "UPDATE guild_discord SET log_channel_id=?, warning_channel_id=?, announcement_channel_id=?, "
                         + "sanction_channel_id=?, report_channel_id=?, message_channel_id=?, command_channel_id=?, "
-                        + "alert_channel_id=?, player_activity_channel_id=? WHERE guild_id=?";
+                        + "alert_channel_id=?, player_activity_channel_id=?, log_user_verified=? WHERE guild_id=?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
             stmt.setObject(1, entity.getLogChannelId(), Types.BIGINT);
@@ -67,7 +67,8 @@ public class MySQLGuildDiscordDAO implements ICrud<Long, GuildDiscordModel> {
             stmt.setObject(7, entity.getCommandChannelId(), Types.BIGINT);
             stmt.setObject(8, entity.getAlertChannelId(), Types.BIGINT);
             stmt.setObject(9, entity.getPlayerActivityChannelId(), Types.BIGINT);
-            stmt.setLong(10, entity.getGuildId());
+            stmt.setObject(10, entity.getLogUserVerifiedId(), Types.BIGINT);
+            stmt.setLong(11, entity.getGuildId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             EventDispatcher.dispatchAlert(e.getMessage());
@@ -95,7 +96,7 @@ public class MySQLGuildDiscordDAO implements ICrud<Long, GuildDiscordModel> {
     public void create(GuildDiscordModel entity) {
         String sqlQuery = "INSERT INTO guild_discord (guild_id, log_channel_id, warning_channel_id, announcement_channel_id, "
                         + "sanction_channel_id, report_channel_id, message_channel_id, command_channel_id, "
-                        + "alert_channel_id, player_activity_channel_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        + "alert_channel_id, player_activity_channel_id, log_user_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
             stmt.setLong(1, entity.getGuildId());
@@ -108,6 +109,7 @@ public class MySQLGuildDiscordDAO implements ICrud<Long, GuildDiscordModel> {
             stmt.setObject(8, entity.getCommandChannelId(), Types.BIGINT);
             stmt.setObject(9, entity.getAlertChannelId(), Types.BIGINT);
             stmt.setObject(10, entity.getPlayerActivityChannelId(), Types.BIGINT);
+            stmt.setObject(11, entity.getLogUserVerifiedId(), Types.BIGINT);
             stmt.executeUpdate();
         } catch (SQLException e) {
             EventDispatcher.dispatchAlert(e.getMessage());
@@ -126,7 +128,8 @@ public class MySQLGuildDiscordDAO implements ICrud<Long, GuildDiscordModel> {
                 rs.getObject("message_channel_id", Long.class),
                 rs.getObject("command_channel_id", Long.class),
                 rs.getObject("alert_channel_id", Long.class),
-                rs.getObject("player_activity_channel_id", Long.class)
+                rs.getObject("player_activity_channel_id", Long.class),
+                rs.getObject("log_user_verified", Long.class)
         );
     }
 }

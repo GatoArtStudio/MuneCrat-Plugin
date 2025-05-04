@@ -12,6 +12,7 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
@@ -92,5 +93,9 @@ public class PlayerHelper {
         double y = Double.parseDouble(parts[1]);
         double z = Double.parseDouble(parts[2]);
         return new Location(Bukkit.getWorld(UUID.fromString(parts[3])), x, y, z);
+    }
+
+    public static UUID getOfflinePlayerUUID(String name) {
+        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(StandardCharsets.UTF_8));
     }
 }
