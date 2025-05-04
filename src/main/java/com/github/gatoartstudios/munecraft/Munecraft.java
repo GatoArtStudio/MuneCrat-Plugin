@@ -1,6 +1,7 @@
 package com.github.gatoartstudios.munecraft;
 
 import com.github.gatoartstudios.munecraft.command.DevelopmentCommand;
+import com.github.gatoartstudios.munecraft.command.LoginCommand;
 import com.github.gatoartstudios.munecraft.command.StaffChatCommand;
 import com.github.gatoartstudios.munecraft.command.StaffCommand;
 import com.github.gatoartstudios.munecraft.config.ConfigManager;
@@ -104,6 +105,7 @@ public final class Munecraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ServerLoadListener(), this);
         getServer().getPluginManager().registerEvents(new DimensionRestrictor(), this);
         getServer().getPluginManager().registerEvents(new GraveSystema(this), this); // Register GraveSystema with Munecraft instance
+        getServer().getPluginManager().registerEvents(new HandlerLoginPlayer(), this);
     }
 
     /**
@@ -114,6 +116,7 @@ public final class Munecraft extends JavaPlugin {
         Objects.requireNonNull(getCommand("development")).setExecutor(new DevelopmentCommand(this));
         Objects.requireNonNull(getCommand("staff")).setExecutor(new StaffCommand(this));
         Objects.requireNonNull(getCommand("staffchat")).setExecutor(new StaffChatCommand(this));
+        Objects.requireNonNull(getCommand("login")).setExecutor(new LoginCommand());
     }
 
     /**

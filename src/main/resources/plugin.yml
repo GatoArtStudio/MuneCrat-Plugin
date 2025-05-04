@@ -22,6 +22,9 @@ commands:
     description: "Toggles staff chat"
     usage: '/staffchat'
     permission: munecraft.staffchat
+  login:
+    description: "Logs the player in"
+    usage: '/login'
 
 permissions:
   munecraft.staff:

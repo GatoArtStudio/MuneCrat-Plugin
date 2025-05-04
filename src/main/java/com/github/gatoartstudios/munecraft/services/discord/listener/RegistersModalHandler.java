@@ -60,7 +60,11 @@ public class RegistersModalHandler extends ListenerAdapter {
                     event.getUser().getIdLong(),
                     event.getUser().getName()
             )) {
-                ToolsDiscord.addRoleUser(event.getUser().getIdLong(), VERIFIED_USER_ROLE_ID, Objects.requireNonNull(event.getGuild()).getIdLong(), "." + userName);
+                try {
+                    ToolsDiscord.addRoleUser(event.getUser().getIdLong(), VERIFIED_USER_ROLE_ID, Objects.requireNonNull(event.getGuild()).getIdLong(), "." + userName);
+                } catch (Exception e) {
+                    LoggerCustom.error(String.valueOf(e));
+                }
 
                 editNameUser(event);
 
@@ -75,7 +79,11 @@ public class RegistersModalHandler extends ListenerAdapter {
                     event.getUser().getIdLong(),
                     event.getUser().getName()
             )) {
-                ToolsDiscord.addRoleUser(event.getUser().getIdLong(), VERIFIED_USER_ROLE_ID, Objects.requireNonNull(event.getGuild()).getIdLong(), userName);
+                try {
+                    ToolsDiscord.addRoleUser(event.getUser().getIdLong(), VERIFIED_USER_ROLE_ID, Objects.requireNonNull(event.getGuild()).getIdLong(), userName);
+                } catch (Exception e) {
+                    LoggerCustom.error(String.valueOf(e));
+                }
 
                 editNameUser(event);
 
@@ -101,12 +109,17 @@ public class RegistersModalHandler extends ListenerAdapter {
     private boolean registerUserMinecraft(String userName, String password, long idDiscord, String discordName) {
         try {
 
-            PlayerModel playerData = playerDAO.read(PlayerHelper.getOfflinePlayerUUID(userName));
+            PlayerModel playerData = playerDAO.readByMinecraftName(userName);
+            UUID uuidGenerated = PlayerHelper.getOfflinePlayerUUID(userName);
+
+            if (uuidGenerated == null) return false;
+
+            LoggerCustom.debug("UUID Offline Player: " + uuidGenerated + " Name: " + userName);
 
             if (playerData == null) {
                 playerDAO.create(
                         new PlayerModel(
-                                PlayerHelper.getOfflinePlayerUUID(userName),
+                                uuidGenerated,
                                 userName
                         )
                 );

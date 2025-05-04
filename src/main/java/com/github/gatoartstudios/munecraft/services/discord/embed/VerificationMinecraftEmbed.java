@@ -29,8 +29,12 @@ public class VerificationMinecraftEmbed {
 
     public EmbedBuilder getEmbedBuilder() {
         return new EmbedBuilder()
-                .setTitle("Verification Minecraft")
-                .setDescription("Para verificarte, por favor selecciona alguna de las siguientes plataformas.")
+                .setTitle("> Verificación MuñeCraft <:1c5fc47fe92d9d07a786f4d33f2904c6:1363641810613829763>")
+                .setDescription("> Para acceder al servidor, debes verificarte seleccionando una de las siguientes plataformas.\n" +
+                        "\n" +
+                        "> Importante: Si no completas la verificación, no podrás entrar al servidor.\n" +
+                        "\n" +
+                        "> Sigue atentamente todos los pasos que se te indiquen durante el proceso de verificación.")
                 .setColor(Color.GREEN);
     }
 

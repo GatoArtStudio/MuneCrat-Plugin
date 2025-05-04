@@ -75,7 +75,7 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
      */
     @Override
     public void update(PlayerModel entity) {
-        String sqlQuery = "UPDATE player SET uuid=?, minecraft_name=?, ip=?, inventory=?, inventory_staff=?, StaffMode=?, isPremium=?, last_login=?, StaffChatMode=? WHERE uuid=?";
+        String sqlQuery = "UPDATE player SET uuid=?, minecraft_name=?, ip=?, inventory=?, inventory_staff=?, StaffMode=?, isPremium=?, last_login=?, StaffChatMode=?, ultimate_location=? WHERE uuid=?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
             stmt.setString(1, entity.getUuid().toString());
@@ -87,7 +87,8 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
             stmt.setBoolean(7, entity.getPremium());
             stmt.setObject(8, entity.getLastLogin() != null ? Timestamp.valueOf(entity.getLastLogin()) : null, Types.TIMESTAMP);
             stmt.setBoolean(9, entity.getStaffChatMode());
-            stmt.setString(10, entity.getUuid().toString());
+            stmt.setObject(10, entity.getUltimateLocation(), Types.LONGVARCHAR);
+            stmt.setString(11, entity.getUuid().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             EventDispatcher.dispatchAlert(e.getMessage());
@@ -117,6 +118,21 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
         return null;
     }
 
+    public PlayerModel readByMinecraftName(String playerName) {
+        String sqlQuery = "SELECT * FROM player WHERE minecraft_name = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
+            stmt.setString(1, playerName);
+            ResultSet resultPlayer = stmt.executeQuery();
+            if (resultPlayer.next()) {
+                return mapResultSetToPlayerData(resultPlayer);
+            }
+        } catch (SQLException e) {
+            EventDispatcher.dispatchAlert(e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
     /**
      * Creates a new player data entry in the database.
      *
@@ -124,7 +140,7 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
      */
     @Override
     public void create(PlayerModel entity) {
-        String sqlQuery = "INSERT INTO player (uuid, minecraft_name, ip, inventory, inventory_staff, StaffMode, isPremium, last_login, StaffChatMode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO player (uuid, minecraft_name, ip, inventory, inventory_staff, StaffMode, isPremium, last_login, StaffChatMode, ultimate_location) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
             stmt.setString(1, entity.getUuid().toString());
@@ -136,6 +152,7 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
             stmt.setBoolean(7, entity.getPremium());
             stmt.setObject(8, entity.getLastLogin() != null ? Timestamp.valueOf(entity.getLastLogin()) : null, Types.TIMESTAMP);
             stmt.setObject(9, entity.getStaffChatMode(), Types.BOOLEAN);
+            stmt.setObject(10, entity.getUltimateLocation(), Types.LONGVARCHAR);
             stmt.executeUpdate();
         } catch (SQLException e) {
             EventDispatcher.dispatchAlert(e.getMessage());
@@ -160,7 +177,8 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
                 rs.getBoolean("StaffMode"),
                 rs.getBoolean("isPremium"),
                 rs.getObject("last_login", Timestamp.class) != null ? rs.getTimestamp("last_login").toLocalDateTime() : null,
-                rs.getObject("StaffChatMode", Boolean.class)
+                rs.getObject("StaffChatMode", Boolean.class),
+                rs.getObject("ultimate_location", String.class)
         );
     }
 }

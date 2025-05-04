@@ -13,6 +13,7 @@ public class PlayerModel {
     private Boolean isPremium = false;
     private LocalDateTime lastLogin = null;
     private Boolean staffChatMode = false;
+    private String ultimateLocation = null;
 
     public PlayerModel(UUID uuid, String minecraftName, String ip, String inventory, String inventoryStaff) {
         this.uuid = uuid;
@@ -62,6 +63,19 @@ public class PlayerModel {
         this.isPremium = isPremium;
         this.lastLogin = lastLogin;
         this.staffChatMode = staffChatMode;
+    }
+
+    public PlayerModel(UUID uuid, String minecraftName, String ip, String inventory, String inventoryStaff, Boolean staffMode, Boolean isPremium, LocalDateTime lastLogin, Boolean staffChatMode, String ultimateLocation) {
+        this.uuid = uuid;
+        this.minecraftName = minecraftName;
+        this.ip = ip;
+        this.inventory = inventory;
+        this.inventoryStaff = inventoryStaff;
+        StaffMode = staffMode;
+        this.isPremium = isPremium;
+        this.lastLogin = lastLogin;
+        this.staffChatMode = staffChatMode;
+        this.ultimateLocation = ultimateLocation;
     }
 
     public PlayerModel(UUID uuid, String minecraftName) {
@@ -142,5 +156,13 @@ public class PlayerModel {
 
     public void setStaffChatMode(Boolean staffChatMode) {
         this.staffChatMode = staffChatMode;
+    }
+
+    public String getUltimateLocation() {
+        return ultimateLocation;
+    }
+
+    public void setUltimateLocation(String ultimateLocation) {
+        this.ultimateLocation = ultimateLocation;
     }
 }
