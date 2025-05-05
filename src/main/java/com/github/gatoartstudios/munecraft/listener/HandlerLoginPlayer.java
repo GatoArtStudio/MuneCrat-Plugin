@@ -64,6 +64,17 @@ public class HandlerLoginPlayer implements Listener {
         // Handle player login event
         Player player = event.getPlayer();
         LoggerCustom.debug("Player login: " + player.getName());
+    }
+
+    /**
+     * This event fires when a player joins the server.
+     * @param event The PlayerJoinEvent
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        // Handle player join event
+        Player player = event.getPlayer();
+        LoggerCustom.debug("Player joined: " + player.getName());
 
         // Set the player's login state to false
         PlayerLoginState playerLoginState = PlayerLoginState.getInstance();
@@ -79,17 +90,6 @@ public class HandlerLoginPlayer implements Listener {
         // Enable safe mode for the player
         player.setGameMode(GameMode.ADVENTURE);
         player.setInvulnerable(true);
-    }
-
-    /**
-     * This event fires when a player joins the server.
-     * @param event The PlayerJoinEvent
-     */
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        // Handle player join event
-        Player player = event.getPlayer();
-        LoggerCustom.debug("Player joined: " + player.getName());
     }
 
     /**
