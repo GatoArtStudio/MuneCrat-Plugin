@@ -13,9 +13,13 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
 
 
@@ -24,6 +28,7 @@ public class HandlerLoginPlayer implements Listener {
     private final MySQLPlayerDAO playerDAO = new MySQLPlayerDAO();
     // DAO for accessing Discord user data
     private final MySQLUserDiscordDAO userDiscordDAO = new MySQLUserDiscordDAO();
+    private final String MESSAGE_NOT_LOGGED = "Primero debe loguearse en el servidor, usa /login contrasena.";
 
     /**
     * This event fires before the user logs in, or even connects to the server.
@@ -38,15 +43,16 @@ public class HandlerLoginPlayer implements Listener {
         // Check if the player is registered
         UserDiscordModel userDiscordData = userDiscordDAO.readByMinecraftName(name);
 
-        if (userDiscordData == null) {
-            // Disallow login if the player is not registered
-            event.disallow(
-                    AsyncPlayerPreLoginEvent.Result.KICK_FULL,
-                    Component.text("No estas registrado en el servidor o te registraste mal, recuerda que debes verificarte en el servidor de Discord, tu usuario es: ")
-                            .append(Component.text(name).color(TextColor.color(255, 255, 0)))
-                            .color(TextColor.color(255, 0, 0))
-            );
-        }
+        // If the player's data is null, it continues with the flow, but if it's not null, then it returns because the player must already be in the database.
+        if (userDiscordData != null) return;
+
+        // Disallow login if the player is not registered
+        event.disallow(
+                AsyncPlayerPreLoginEvent.Result.KICK_FULL,
+                Component.text("No estas registrado en el servidor o te registraste mal, recuerda que debes verificarte en el servidor de Discord, tu usuario es: ")
+                        .append(Component.text(name).color(TextColor.color(255, 255, 0)))
+                        .color(TextColor.color(255, 0, 0))
+        );
     }
 
     /**
@@ -99,14 +105,15 @@ public class HandlerLoginPlayer implements Listener {
         Player player = event.getPlayer();
         boolean isLoggedIn = PlayerLoginState.getInstance().get(player.getUniqueId());
 
-        if (!isLoggedIn) {
-            // Cancel chat if the player is not logged in
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(
-                    Component.text("Primero debe loguearse en el servidor, usa /login contrasena.")
-                            .color(TextColor.color(255, 0, 0))
-            );
-        }
+        // If the player is logged in, we return from the event; otherwise, we inform them that they are not logged in.
+        if (isLoggedIn) return;
+
+        // Cancel chat if the player is not logged in
+        event.setCancelled(true);
+        event.getPlayer().sendMessage(
+                Component.text(MESSAGE_NOT_LOGGED)
+                        .color(TextColor.color(255, 0, 0))
+        );
     }
 
     /**
@@ -127,7 +134,7 @@ public class HandlerLoginPlayer implements Listener {
             // Cancel command if the player is not logged in and the command is not /login
             event.setCancelled(true);
             player.sendMessage(
-                    Component.text("Primero debe loguearse en el servidor, usa /login contrasena.")
+                    Component.text(MESSAGE_NOT_LOGGED)
                             .color(TextColor.color(255, 0, 0))
             );
         }
@@ -146,15 +153,15 @@ public class HandlerLoginPlayer implements Listener {
         Player player = event.getPlayer();
         boolean isLoggedIn = PlayerLoginState.getInstance().get(player.getUniqueId());
 
-        if (!isLoggedIn) {
+        // If the player is logged in, we return from the event; otherwise, we inform them that they are not logged in.
+        if (isLoggedIn) return;
 
-            if (!event.getFrom().getBlock().equals(event.getTo().getBlock())) {
-                event.setTo(event.getFrom());
-                player.sendMessage(
-                        Component.text("Primero debe loguearse en el servidor, usa /login contrasena.")
-                                .color(TextColor.color(255, 0, 0))
-                );
-            }
+        if (!event.getFrom().getBlock().equals(event.getTo().getBlock())) {
+            event.setTo(event.getFrom());
+            player.sendMessage(
+                    Component.text(MESSAGE_NOT_LOGGED)
+                            .color(TextColor.color(255, 0, 0))
+            );
         }
     }
 
@@ -171,9 +178,99 @@ public class HandlerLoginPlayer implements Listener {
 
         PlayerModel playerConfig = playerDAO.read(event.getPlayer().getUniqueId());
 
-        if (playerConfig != null) {
-            playerConfig.setUltimateLocation(PlayerHelper.serializeLocation(event.getPlayer().getLocation()));
-            playerDAO.update(playerConfig);
-        }
+        if (playerConfig == null) return;
+
+        playerConfig.setUltimateLocation(PlayerHelper.serializeLocation(event.getPlayer().getLocation()));
+        playerDAO.update(playerConfig);
+    }
+
+    /**
+     * It is triggered when a player clicks on any inventory slot (their own or someone else's).
+     * It intercepts single, double, or shift clicks.
+     * These events will be blocked if the player has not logged in.
+     * @param event The InventoryClickEvent
+     */
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInventoryClickEvent(InventoryClickEvent event) {
+        // We get the player and check in the LoginState whether the user is logged in or not, in order to block or allow the event accordingly.
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+
+        boolean isLoggedIn = PlayerLoginState.getInstance().get(player.getUniqueId());
+
+        // If the player is logged in, we return from the event; otherwise, we inform them that they are not logged in.
+        if (isLoggedIn) return;
+
+        event.setCancelled(true);
+        player.sendMessage(
+                Component.text(MESSAGE_NOT_LOGGED)
+                        .color(TextColor.color(255, 0, 0))
+        );
+    }
+
+    /**
+     * It is triggered when a player drags a stack of items over multiple slots.
+     * Canceling this event prevents the redistribution of the ItemStack.
+     * This event will be blocked if the player is not logged in.
+     * @param event The InventoryDragEvent
+     */
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInventoryDragEvent(InventoryDragEvent event) {
+        // We get the player and check in the LoginState whether the user is logged in or not, in order to block or allow the event accordingly.
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+
+        boolean isLoggedIn = PlayerLoginState.getInstance().get(player.getUniqueId());
+
+        // If the player is logged in, we return from the event; otherwise, we inform them that they are not logged in.
+        if (isLoggedIn) return;
+
+        event.setCancelled(true);
+        player.sendMessage(
+                Component.text(MESSAGE_NOT_LOGGED)
+                        .color(TextColor.color(255, 0, 0))
+        );
+    }
+
+    /**
+     * We can detect if a player tries to drop an item from their inventory or slots.
+     * If the player is not logged in, the event is canceled, thus preventing a malicious player from trying to delete another player's items.
+     * @param event The PlayerDropItemEvent
+     */
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerDropItemEvent(PlayerDropItemEvent event) {
+        // We get the player and check in the LoginState whether the user is logged in or not, in order to block or allow the event accordingly.
+        Player player = event.getPlayer();
+
+        boolean isLoggedIn = PlayerLoginState.getInstance().get(player.getUniqueId());
+
+        // If the player is logged in, we return from the event; otherwise, we inform them that they are not logged in.
+        if (isLoggedIn) return;
+
+        event.setCancelled(true);
+        player.sendMessage(
+                Component.text(MESSAGE_NOT_LOGGED)
+                        .color(TextColor.color(255, 0, 0))
+        );
+    }
+
+    /**
+     * If a player tries to open an inventory, this event is triggered.
+     * It will check whether the player is logged in, and if not, the action will be blocked.
+     * @param event The InventoryOpenEvent
+     */
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInventoryOpenEvent(InventoryOpenEvent event) {
+        // We get the player and check in the LoginState whether the user is logged in or not, in order to block or allow the event accordingly.
+        if (!(event.getPlayer() instanceof Player player)) return;
+
+        boolean isLoggedIn = PlayerLoginState.getInstance().get(player.getUniqueId());
+
+        // If the player is logged in, we return from the event; otherwise, we inform them that they are not logged in.
+        if (isLoggedIn) return;
+
+        event.setCancelled(true);
+        player.sendMessage(
+                Component.text(MESSAGE_NOT_LOGGED)
+                        .color(TextColor.color(255, 0, 0))
+        );
     }
 }
