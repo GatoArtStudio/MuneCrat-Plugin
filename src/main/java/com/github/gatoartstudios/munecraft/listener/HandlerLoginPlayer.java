@@ -25,6 +25,10 @@ public class HandlerLoginPlayer implements Listener {
     // DAO for accessing Discord user data
     private final MySQLUserDiscordDAO userDiscordDAO = new MySQLUserDiscordDAO();
 
+    /**
+    * This event fires before the user logs in, or even connects to the server.
+    * @param event The AsyncPlayerPreLoginEvent
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPreLogin(AsyncPlayerPreLoginEvent event) {
         // Handle pre-login event
@@ -45,6 +49,10 @@ public class HandlerLoginPlayer implements Listener {
         }
     }
 
+    /**
+     * This event fires when a player logs in, or even connects to the server.
+     * @param event The PlayerLoginEvent
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLogin(PlayerLoginEvent event) {
         // Handle player login event
@@ -67,6 +75,10 @@ public class HandlerLoginPlayer implements Listener {
         player.setInvulnerable(true);
     }
 
+    /**
+     * This event fires when a player joins the server.
+     * @param event The PlayerJoinEvent
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         // Handle player join event
@@ -74,11 +86,16 @@ public class HandlerLoginPlayer implements Listener {
         LoggerCustom.debug("Player joined: " + player.getName());
     }
 
+    /**
+     * This event allows us to block attempts to write in the chat if you are not logged in yet.
+     * @param event The AsyncChatEvent
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerChat(AsyncChatEvent event) {
         // Handle player chat event
         if (event.isCancelled()) return;
 
+        // We get the player and check in the LoginState whether the user is logged in or not, in order to block or allow the event accordingly.
         Player player = event.getPlayer();
         boolean isLoggedIn = PlayerLoginState.getInstance().get(player.getUniqueId());
 
@@ -92,11 +109,16 @@ public class HandlerLoginPlayer implements Listener {
         }
     }
 
+    /**
+     * This event allows us to block attempts to execute commands if you are not logged in yet.
+     * @param event The PlayerCommandPreprocessEvent
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerExecuteCommand(PlayerCommandPreprocessEvent event) {
         // Handle command execution event
         if (event.isCancelled()) return;
 
+        // We get the player and check in the LoginState whether the user is logged in or not, in order to block or allow the event accordingly.
         Player player = event.getPlayer();
         boolean isLoggedIn = PlayerLoginState.getInstance().get(player.getUniqueId());
         String[] parts = event.getMessage().trim().split(" ");
@@ -111,12 +133,19 @@ public class HandlerLoginPlayer implements Listener {
         }
     }
 
+    /**
+     * This event allows us to block attempts to move if you are not logged in yet.
+     * If the player tries to move but hasn't logged in yet, the event is canceled,
+     * and a message is sent to them indicating that they must log in first.
+     * @param event The PlayerMoveEvent
+     */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
 
+        // We get the player and check in the LoginState whether the user is logged in or not, in order to block or allow the event accordingly.
         Player player = event.getPlayer();
-
         boolean isLoggedIn = PlayerLoginState.getInstance().get(player.getUniqueId());
+
         if (!isLoggedIn) {
 
             if (!event.getFrom().getBlock().equals(event.getTo().getBlock())) {
@@ -129,6 +158,12 @@ public class HandlerLoginPlayer implements Listener {
         }
     }
 
+    /**
+     * This event fires when a player leaves the server.
+     * We take advantage of the event to save the player's last location before they disconnect.
+     * At the same time, it will be used in the future to store the information of the last time they were online.
+     * @param event The PlayerQuitEvent
+     */
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         // Handle player quit event
