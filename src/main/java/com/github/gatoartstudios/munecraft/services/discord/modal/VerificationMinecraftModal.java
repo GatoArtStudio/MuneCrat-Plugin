@@ -38,11 +38,15 @@ public class VerificationMinecraftModal implements Modal {
 
         TextInput passwordMinecraft = TextInput.create("passwordminecraft", "Contraseña", TextInputStyle.SHORT)
                 .setPlaceholder("Escribe la contraseña que usarás en servidor")
+                .setMinLength(5)
+                .setMaxLength(45)
                 .setRequired(true)
                 .build();
 
         TextInput confirmPasswordMinecraft = TextInput.create("confirmpasswordminecraft", "Confirmar Contraseña", TextInputStyle.SHORT)
                 .setPlaceholder("Confirma la contraseña que usarás en servidor")
+                .setMinLength(5)
+                .setMaxLength(45)
                 .setRequired(true)
                 .build();
 
