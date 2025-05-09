@@ -51,9 +51,7 @@ public class GraveSystema implements Listener {
                     new PlayerModel(
                             player.getUniqueId(),
                             player.getName(),
-                            player.getAddress().getAddress().getHostAddress(),
-                            null,
-                            null
+                            player.getAddress().getAddress().getHostAddress()
                     )
             );
         }
