@@ -53,12 +53,12 @@ public class MySQLGraveDAO implements ICrud<Integer, GraveModel> {
 
     @Override
     public void update(GraveModel entity) {
-        String sqlQuery = "UPDATE grave SET uuid=?, respawn_here=?, grave_public=?, grave_duration=?, grave_location=?, grave_inventory=? WHERE id_grave=?";
+        String sqlQuery = "UPDATE grave SET uuid=?, is_respawn_here=?, is_grave_public=?, grave_duration=?, grave_location=?, grave_inventory=? WHERE id_grave=?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
             stmt.setString(1, entity.getUuid().toString());
-            stmt.setBoolean(2, entity.getRespawnHere());
-            stmt.setBoolean(3, entity.getGravePublic());
+            stmt.setBoolean(2, entity.isRespawnHere());
+            stmt.setBoolean(3, entity.isGravePublic());
             stmt.setInt(4, entity.getGraveDuration());
             stmt.setString(5, entity.getGraveLocation());
             stmt.setString(6, entity.getGraveInventory());
@@ -88,12 +88,12 @@ public class MySQLGraveDAO implements ICrud<Integer, GraveModel> {
 
     @Override
     public void create(GraveModel entity) {
-        String sqlQuery = "INSERT INTO grave (uuid, respawn_here, grave_public, grave_duration, grave_location, grave_inventory) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO grave (uuid, is_respawn_here, is_grave_public, grave_duration, grave_location, grave_inventory) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
             stmt.setString(1, entity.getUuid().toString());
-            stmt.setBoolean(2, entity.getRespawnHere());
-            stmt.setBoolean(3, entity.getGravePublic());
+            stmt.setBoolean(2, entity.isRespawnHere());
+            stmt.setBoolean(3, entity.isGravePublic());
             stmt.setInt(4, entity.getGraveDuration());
             stmt.setString(5, entity.getGraveLocation());
             stmt.setString(6, entity.getGraveInventory());
@@ -108,8 +108,8 @@ public class MySQLGraveDAO implements ICrud<Integer, GraveModel> {
         return new GraveModel(
                 rs.getInt("id_grave"),
                 UUID.fromString(rs.getString("uuid")),
-                rs.getBoolean("respawn_here"),
-                rs.getBoolean("grave_public"),
+                rs.getBoolean("is_respawn_here"),
+                rs.getBoolean("is_grave_public"),
                 rs.getInt("grave_duration"),
                 rs.getString("grave_location"),
                 rs.getString("grave_inventory")
