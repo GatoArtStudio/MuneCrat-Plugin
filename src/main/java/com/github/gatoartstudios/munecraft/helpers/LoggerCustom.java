@@ -1,7 +1,10 @@
 package com.github.gatoartstudios.munecraft.helpers;
 
 import com.github.gatoartstudios.munecraft.core.event.EventDispatcher;
+import okhttp3.Dispatcher;
 import org.bukkit.Bukkit;
+
+import java.util.logging.Logger;
 
 public class LoggerCustom {
     private static final String ANSI_RESET = "\u001B[0m";
@@ -18,14 +21,56 @@ public class LoggerCustom {
     private static final String debugPrefix = ANSI_BLUE + "[DEBUG] ";
     private static final String successPrefix = ANSI_GREEN + "[SUCCESS] " + ANSI_RESET;
 
+    private static Logger getLogger() {
+        try {
+            return Bukkit.getLogger();
+        } catch (Throwable t) {
+            // Estamos en test, o Bukkit no cargó
+            return null;
+        }
+    }
+
+    private static void logRaw(String msg, String typePrefix) {
+        Logger logger = getLogger();
+        if (logger != null) {
+            switch (typePrefix) {
+                case infoPrefix:
+                    logger.info(prefix + infoPrefix + msg + ANSI_RESET);
+                    EventDispatcher.dispatchLogging("[Plugin] [Info] " + msg);
+                    break;
+                case warningPrefix:
+                    logger.warning(prefix + warningPrefix + msg + ANSI_RESET);
+                    EventDispatcher.dispatchLogging("[Plugin] [Warning] " + msg);
+                    break;
+                case errorPrefix:
+                    logger.severe(prefix + errorPrefix + msg + ANSI_RESET);
+                    EventDispatcher.dispatchLogging("[Plugin] [Error] " + msg);
+                    break;
+                case debugPrefix:
+                    logger.info(prefix + debugPrefix + msg + ANSI_RESET);
+                    EventDispatcher.dispatchLogging("[Plugin] [Debug] " + msg);
+                    break;
+                case successPrefix:
+                    logger.info(prefix + successPrefix + msg + ANSI_RESET);
+                    EventDispatcher.dispatchLogging("[Plugin] [Success] " + msg);
+                    break;
+                default:
+                    logger.info(prefix + msg + ANSI_RESET);
+                    EventDispatcher.dispatchLogging("[Plugin] " + msg);
+                    break;
+            }
+        } else {
+            System.out.println(msg);
+        }
+    }
+
     /**
      * Logs an informational message to the console and dispatches a logging event.
      *
      * @param message the informational message to be logged
      */
     public static void info(String message) {
-        Bukkit.getLogger().info(prefix + infoPrefix + message + ANSI_RESET);
-        EventDispatcher.dispatchLogging("[Plugin] [Info] " + message);
+        logRaw(message, infoPrefix);
     }
 
     /**
@@ -34,8 +79,7 @@ public class LoggerCustom {
      * @param message the warning message to be logged
      */
     public static void warning(String message) {
-        Bukkit.getLogger().warning(prefix + warningPrefix + message + ANSI_RESET);
-        EventDispatcher.dispatchLogging("[Plugin] [Warning] " + message);
+        logRaw(message, warningPrefix);
     }
 
     /**
@@ -44,8 +88,7 @@ public class LoggerCustom {
      * @param message the error message to be logged
      */
     public static void error(String message) {
-        Bukkit.getLogger().severe(prefix + errorPrefix + message + ANSI_RESET);
-        EventDispatcher.dispatchLogging("[Plugin] [Error] " + message);
+        logRaw(message, errorPrefix);
     }
 
     /**
@@ -54,8 +97,7 @@ public class LoggerCustom {
      * @param message the debug message to be logged
      */
     public static void debug(String message) {
-        Bukkit.getLogger().info(prefix + debugPrefix + message + ANSI_RESET);
-        EventDispatcher.dispatchLogging("[Plugin] [Debug] " + message);
+        logRaw(message, debugPrefix);
     }
 
     /**
@@ -64,8 +106,7 @@ public class LoggerCustom {
      * @param message the success message to be logged
      */
     public static void success(String message) {
-        Bukkit.getLogger().info(prefix + successPrefix + message + ANSI_RESET);
-        EventDispatcher.dispatchLogging("[Plugin] [Success] " + message);
+        logRaw(message, successPrefix);
     }
 
     /**
@@ -74,7 +115,6 @@ public class LoggerCustom {
      * @param message the raw message to be logged
      */
     public static void raw(String message) {
-        Bukkit.getLogger().info(message);
-        EventDispatcher.dispatchLogging("[Plugin] [Raw] " + message);
+        logRaw(message, "");
     }
 }
