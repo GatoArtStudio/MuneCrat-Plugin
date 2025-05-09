@@ -5,13 +5,13 @@ import java.util.UUID;
 public class GraveModel {
     private int idGrave;
     private UUID uuid;
-    private Boolean respawnHere;
-    private Boolean gravePublic;
+    private boolean respawnHere = false;
+    private boolean gravePublic = true;
     private int graveDuration;
     private String graveLocation;
     private String graveInventory;
 
-    public GraveModel(int idGrave, UUID uuid, Boolean respawnHere, Boolean gravePublic, int graveDuration, String graveLocation, String graveInventory) {
+    public GraveModel(int idGrave, UUID uuid, boolean respawnHere, boolean gravePublic, int graveDuration, String graveLocation, String graveInventory) {
         this.idGrave = idGrave;
         this.uuid = uuid;
         this.respawnHere = respawnHere;
@@ -40,19 +40,19 @@ public class GraveModel {
         this.uuid = uuid;
     }
 
-    public Boolean getRespawnHere() {
+    public boolean isRespawnHere() {
         return respawnHere;
     }
 
-    public void setRespawnHere(Boolean respawnHere) {
+    public void setRespawnHere(boolean respawnHere) {
         this.respawnHere = respawnHere;
     }
 
-    public Boolean getGravePublic() {
+    public boolean isGravePublic() {
         return gravePublic;
     }
 
-    public void setGravePublic(Boolean gravePublic) {
+    public void setGravePublic(boolean gravePublic) {
         this.gravePublic = gravePublic;
     }
 
