@@ -3,17 +3,20 @@
 START TRANSACTION;
 
 CREATE TABLE IF NOT EXISTS `player` (
-    `uuid` VARCHAR(36) NOT NULL,
+    `id_player` BIGINT NOT NULL AUTO_INCREMENT,
+    `uuid` VARCHAR(36) DEFAULT NULL,
     `minecraft_name` VARCHAR(255) NOT NULL,
-    `ip` VARCHAR(40),
-    `inventory` MEDIUMTEXT,
-    `inventory_staff` MEDIUMTEXT,
-    `StaffMode` TINYINT(1) NOT NULL,
-    `isPremium` TINYINT(1) NOT NULL,
-    `last_login` DATETIME,
-    `StaffChatMode` TINYINT(1) NOT NULL,
-    `ultimate_location` MEDIUMTEXT,
-    PRIMARY KEY (`uuid`)
+    `ip` VARCHAR(40) DEFAULT NULL,
+    `login_at` DATETIME DEFAULT NULL,
+    `logout_at` DATETIME DEFAULT NULL,
+    `is_active` BOOLEAN DEFAULT FALSE,
+    `inventory` MEDIUMTEXT DEFAULT NULL,
+    `inventory_staff` MEDIUMTEXT DEFAULT NULL,
+    `location` MEDIUMTEXT DEFAULT NULL,
+    `is_premium` BOOLEAN DEFAULT FALSE,
+    `mode_staff` BOOLEAN DEFAULT FALSE,
+    `mode_staffchat` BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (`id_player`)
 );
 
 
@@ -118,16 +121,7 @@ ALTER TABLE user_guild_discord
     ADD UNIQUE (id_discord, guild_id, id_rol);
 
 ALTER TABLE player
-    ADD UNIQUE (minecraft_name);
-
-ALTER TABLE player
-    ADD COLUMN IF NOT EXISTS StaffChatMode TINYINT(1) NOT NULL DEFAULT 0;
-
-ALTER TABLE player
-    ADD COLUMN IF NOT EXISTS ultimate_location MEDIUMTEXT;
-
-ALTER TABLE guild_discord
-    ADD COLUMN IF NOT EXISTS log_user_verified BIGINT;
+    ADD UNIQUE (minecraft_name, uuid);
 
 ALTER TABLE user_discord
     ADD FOREIGN KEY (minecraft_name) REFERENCES player(minecraft_name);
