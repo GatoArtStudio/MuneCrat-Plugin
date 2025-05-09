@@ -75,20 +75,23 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
      */
     @Override
     public void update(PlayerModel entity) {
-        String sqlQuery = "UPDATE player SET uuid=?, minecraft_name=?, ip=?, inventory=?, inventory_staff=?, StaffMode=?, isPremium=?, last_login=?, StaffChatMode=?, ultimate_location=? WHERE uuid=?";
+        String sqlQuery = "UPDATE player SET uuid=?, minecraft_name=?, ip=?, login_at=?, logout_at=?, is_active=?, inventory=?, inventory_staff=?, location=?, is_premium=?, is_mode_staff=?, is_mode_staffchat=? WHERE id_player=?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
-            stmt.setString(1, entity.getUuid().toString());
+            stmt.setObject(1, entity.getUuid() != null ? entity.getUuid().toString() : null, Types.VARCHAR);
             stmt.setString(2, entity.getMinecraftName());
             stmt.setObject(3, entity.getIp(), Types.VARCHAR);
-            stmt.setObject(4, entity.getInventory(), Types.LONGVARCHAR);
-            stmt.setObject(5, entity.getInventoryStaff(), Types.LONGVARCHAR);
-            stmt.setBoolean(6, entity.getStaffMode());
-            stmt.setBoolean(7, entity.getPremium());
-            stmt.setObject(8, entity.getLastLogin() != null ? Timestamp.valueOf(entity.getLastLogin()) : null, Types.TIMESTAMP);
-            stmt.setBoolean(9, entity.getStaffChatMode());
-            stmt.setObject(10, entity.getUltimateLocation(), Types.LONGVARCHAR);
-            stmt.setString(11, entity.getUuid().toString());
+            stmt.setObject(4, entity.getLoginAt() != null ? Timestamp.valueOf(entity.getLoginAt()) : null, Types.TIMESTAMP);
+            stmt.setObject(5, entity.getLogoutAt() != null ? Timestamp.valueOf(entity.getLogoutAt()) : null, Types.TIMESTAMP);
+            stmt.setObject(6, entity.isActive(), Types.BOOLEAN);
+            stmt.setObject(7, entity.getInventory(), Types.LONGVARCHAR);
+            stmt.setObject(8, entity.getInventoryStaff(), Types.LONGVARCHAR);
+            stmt.setObject(9, entity.getLocation(), Types.LONGVARCHAR);
+            stmt.setObject(10, entity.isPremium(), Types.BOOLEAN);
+            stmt.setObject(11, entity.isModeStaff(), Types.BOOLEAN);
+            stmt.setObject(12, entity.isModeStaffChat(), Types.BOOLEAN);
+
+            stmt.setLong(13, entity.getIdPlayer());
             stmt.executeUpdate();
         } catch (SQLException e) {
             EventDispatcher.dispatchAlert(e.getMessage());
@@ -140,19 +143,22 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
      */
     @Override
     public void create(PlayerModel entity) {
-        String sqlQuery = "INSERT INTO player (uuid, minecraft_name, ip, inventory, inventory_staff, StaffMode, isPremium, last_login, StaffChatMode, ultimate_location) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO player (uuid, minecraft_name, ip, login_at, logout_at, is_active, inventory, inventory_staff, location, is_premium, is_mode_staff, is_mode_staffchat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
-            stmt.setString(1, entity.getUuid().toString());
+            stmt.setObject(1, entity.getUuid() != null ? entity.getUuid().toString() : null, Types.VARCHAR);
             stmt.setString(2, entity.getMinecraftName());
             stmt.setObject(3, entity.getIp(), Types.VARCHAR);
-            stmt.setObject(4, entity.getInventory(), Types.LONGVARCHAR);
-            stmt.setObject(5, entity.getInventoryStaff(), Types.LONGVARCHAR);
-            stmt.setBoolean(6, entity.getStaffMode());
-            stmt.setBoolean(7, entity.getPremium());
-            stmt.setObject(8, entity.getLastLogin() != null ? Timestamp.valueOf(entity.getLastLogin()) : null, Types.TIMESTAMP);
-            stmt.setObject(9, entity.getStaffChatMode(), Types.BOOLEAN);
-            stmt.setObject(10, entity.getUltimateLocation(), Types.LONGVARCHAR);
+            stmt.setObject(4, entity.getLoginAt() != null ? Timestamp.valueOf(entity.getLoginAt()) : null, Types.TIMESTAMP);
+            stmt.setObject(5, entity.getLogoutAt() != null ? Timestamp.valueOf(entity.getLogoutAt()) : null, Types.TIMESTAMP);
+            stmt.setObject(6, entity.isActive(), Types.BOOLEAN);
+            stmt.setObject(7, entity.getInventory(), Types.LONGVARCHAR);
+            stmt.setObject(8, entity.getInventoryStaff(), Types.LONGVARCHAR);
+            stmt.setObject(9, entity.getLocation(), Types.LONGVARCHAR);
+            stmt.setObject(10, entity.isPremium(), Types.BOOLEAN);
+            stmt.setObject(11, entity.isModeStaff(), Types.BOOLEAN);
+            stmt.setObject(12, entity.isModeStaffChat(), Types.BOOLEAN);
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             EventDispatcher.dispatchAlert(e.getMessage());
@@ -169,16 +175,19 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
      */
     private PlayerModel mapResultSetToPlayerData(ResultSet rs) throws SQLException {
         return new PlayerModel(
-                UUID.fromString(rs.getString("uuid")),
+                rs.getLong("id_player"),
+                rs.getObject("uuid", String.class) != null ? UUID.fromString(rs.getString("uuid")) : null,
                 rs.getString("minecraft_name"),
                 rs.getObject("ip", String.class),
+                rs.getObject("login_at", Timestamp.class) != null ? rs.getTimestamp("login_at").toLocalDateTime() : null,
+                rs.getObject("logout_at", Timestamp.class) != null ? rs.getTimestamp("logout_at").toLocalDateTime() : null,
+                rs.getObject("is_active", Boolean.class),
                 rs.getObject("inventory", String.class),
                 rs.getObject("inventory_staff", String.class),
-                rs.getBoolean("StaffMode"),
-                rs.getBoolean("isPremium"),
-                rs.getObject("last_login", Timestamp.class) != null ? rs.getTimestamp("last_login").toLocalDateTime() : null,
-                rs.getObject("StaffChatMode", Boolean.class),
-                rs.getObject("ultimate_location", String.class)
+                rs.getObject("location", String.class),
+                rs.getObject("is_premium", Boolean.class),
+                rs.getObject("is_mode_staff", Boolean.class),
+                rs.getObject("is_mode_staffchat", Boolean.class)
         );
     }
 }
