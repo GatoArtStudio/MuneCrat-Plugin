@@ -10,11 +10,11 @@ public class PlayerModel {
     private String ip = null;
     private LocalDateTime loginAt = null;
     private LocalDateTime logoutAt = null;
-    private boolean isActive = false;
+    private boolean active = false;
     private String inventory = null;
     private String inventoryStaff = null;
     private String location = null;
-    private boolean isPremium = false;
+    private boolean premium = false;
     private boolean modeStaff = false;
     private boolean modeStaffChat = false;
 
@@ -22,36 +22,37 @@ public class PlayerModel {
         this.minecraftName = minecraftName;
     }
 
-    public PlayerModel(UUID uuid, String minecraftName, String ip, LocalDateTime loginAt, LocalDateTime logoutAt, boolean isActive, String inventory, String inventoryStaff, String location, boolean isPremium, boolean modeStaff, boolean modeStaffChat) {
+    public PlayerModel(UUID uuid, String minecraftName, String ip, LocalDateTime loginAt, LocalDateTime logoutAt, boolean active, String inventory, String inventoryStaff, String location, boolean premium, boolean modeStaff, boolean modeStaffChat) {
         this.uuid = uuid;
         this.minecraftName = minecraftName;
         this.ip = ip;
         this.loginAt = loginAt;
         this.logoutAt = logoutAt;
-        this.isActive = isActive;
+        this.active = active;
         this.inventory = inventory;
         this.inventoryStaff = inventoryStaff;
         this.location = location;
-        this.isPremium = isPremium;
+        this.premium = premium;
         this.modeStaff = modeStaff;
         this.modeStaffChat = modeStaffChat;
     }
 
-    public PlayerModel(Long idPlayer, UUID uuid, String minecraftName, String ip, LocalDateTime loginAt, LocalDateTime logoutAt, boolean isActive, String inventory, String inventoryStaff, String location, boolean isPremium, boolean modeStaff, boolean modeStaffChat) {
+    public PlayerModel(Long idPlayer, UUID uuid, String minecraftName, String ip, LocalDateTime loginAt, LocalDateTime logoutAt, boolean active, String inventory, String inventoryStaff, String location, boolean premium, boolean modeStaff, boolean modeStaffChat) {
         this.idPlayer = idPlayer;
         this.uuid = uuid;
         this.minecraftName = minecraftName;
         this.ip = ip;
         this.loginAt = loginAt;
         this.logoutAt = logoutAt;
-        this.isActive = isActive;
+        this.active = active;
         this.inventory = inventory;
         this.inventoryStaff = inventoryStaff;
         this.location = location;
-        this.isPremium = isPremium;
+        this.premium = premium;
         this.modeStaff = modeStaff;
         this.modeStaffChat = modeStaffChat;
     }
+
 
     public Long getIdPlayer() {
         return idPlayer;
@@ -102,11 +103,11 @@ public class PlayerModel {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public String getInventory() {
@@ -134,11 +135,11 @@ public class PlayerModel {
     }
 
     public boolean isPremium() {
-        return isPremium;
+        return premium;
     }
 
     public void setPremium(boolean premium) {
-        isPremium = premium;
+        this.premium = premium;
     }
 
     public boolean isModeStaff() {
