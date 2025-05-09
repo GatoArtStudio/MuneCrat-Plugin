@@ -26,6 +26,12 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
         LoggerCustom.info("Crud for players loaded as a new instance");
     }
 
+    // Constructor for testing
+    public MySQLPlayerDAO(Connection connection) {
+        this.connection = connection;
+        LoggerCustom.info("Crud for players loaded as a new instance");
+    }
+
     /**
      * Retrieves all player data from the database.
      *
@@ -143,7 +149,7 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
      */
     @Override
     public void create(PlayerModel entity) {
-        String sqlQuery = "INSERT INTO player (uuid, minecraft_name, ip, login_at, logout_at, is_active, inventory, inventory_staff, location, is_premium, is_mode_staff, is_mode_staffchat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO player (uuid, minecraft_name, ip, login_at, logout_at, is_active, inventory, inventory_staff, location, is_premium, is_mode_staff, is_mode_staffchat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
             stmt.setObject(1, entity.getUuid() != null ? entity.getUuid().toString() : null, Types.VARCHAR);
