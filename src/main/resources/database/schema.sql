@@ -65,15 +65,15 @@ CREATE TABLE IF NOT EXISTS `guild_discord` (
 CREATE TABLE IF NOT EXISTS `rol_discord` (
     `id_rol` BIGINT NOT NULL,
     `name` TEXT NOT NULL,
-    `guild_id` BIGINT NOT NULL UNIQUE,
-    `isAdmin` TINYINT(1) NOT NULL,
-    `isBuilder` TINYINT(1) NOT NULL,
-    `isMod` TINYINT(1) NOT NULL,
-    `isDevelopment` TINYINT(1) NOT NULL,
-    `isHelper` TINYINT(1) NOT NULL,
-    `isVip` TINYINT(1) NOT NULL,
-    `isBooter` TINYINT(1) NOT NULL,
-    `isVerified` TINYINT(1) NOT NULL,
+    `guild_id` BIGINT NOT NULL,
+    `is_admin` BOOLEAN DEFAULT FALSE,
+    `is_builder` BOOLEAN DEFAULT FALSE,
+    `is_mod` BOOLEAN DEFAULT FALSE,
+    `is_development` BOOLEAN DEFAULT FALSE,
+    `is_helper` BOOLEAN DEFAULT FALSE,
+    `is_vip` BOOLEAN DEFAULT FALSE,
+    `is_booter` BOOLEAN DEFAULT FALSE,
+    `is_verified` BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (`id_rol`)
 );
 
@@ -112,6 +112,7 @@ CREATE TABLE IF NOT EXISTS `subscription` (
 -- Foreign key constraints
 
 ALTER TABLE rol_discord
+    ADD UNIQUE (guild_id),
     ADD FOREIGN KEY (guild_id) REFERENCES guild_discord(guild_id);
 
 ALTER TABLE user_guild_discord
