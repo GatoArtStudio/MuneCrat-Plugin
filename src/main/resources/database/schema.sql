@@ -121,7 +121,8 @@ ALTER TABLE user_guild_discord
     ADD UNIQUE (id_discord, guild_id, id_rol);
 
 ALTER TABLE player
-    ADD UNIQUE (minecraft_name, uuid);
+    ADD UNIQUE (uuid),
+    ADD UNIQUE (minecraft_name);
 
 CREATE INDEX idx_player_uuid ON player(uuid);
 
