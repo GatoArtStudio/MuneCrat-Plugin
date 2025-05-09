@@ -39,19 +39,17 @@ public class StaffChatCommand implements CommandExecutor {
         PlayerModel playerData = playerDAO.read(player.getUniqueId());
 
         if (playerData == null) {
-            playerDAO.create(
-                    new PlayerModel(
-                            player.getUniqueId(),
-                            player.getName(),
-                            Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress(),
-                            PlayerHelper.serializeInventory(player),
-                            null,
-                            false,
-                            false,
-                            null,
-                            true
-                    )
+
+            PlayerModel playerConfig = new PlayerModel(
+                    player.getUniqueId(),
+                    player.getName(),
+                    Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress(),
+                    PlayerHelper.serializeInventory(player)
             );
+
+            playerConfig.setModeStaffChat(true);
+
+            playerDAO.create(playerConfig);
 
             Component messageResponse = Component.text("Ahora estas en modo staff chat.")
                     .color(TextColor.color(0, 255, 0));
@@ -61,8 +59,8 @@ public class StaffChatCommand implements CommandExecutor {
             return true;
         };
 
-        if (playerData.getStaffChatMode()) {
-            playerData.setStaffChatMode(false);
+        if (playerData.isModeStaffChat()) {
+            playerData.setModeStaffChat(false);
             playerDAO.update(playerData);
 
             Component messageResponse = Component.text("Ahora estas en modo normal.")
@@ -70,7 +68,7 @@ public class StaffChatCommand implements CommandExecutor {
 
             player.sendMessage(messageResponse);
         } else {
-            playerData.setStaffChatMode(true);
+            playerData.setModeStaffChat(true);
             playerDAO.update(playerData);
             Component messageResponse = Component.text("Ahora estas en modo staff chat.")
                     .color(TextColor.color(0, 255, 0));
