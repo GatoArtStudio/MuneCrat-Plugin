@@ -113,6 +113,8 @@ public class MySQLPlayerDAO implements ICrud<UUID, PlayerModel> {
      */
     @Override
     public PlayerModel read(UUID id) {
+        if (id == null) return null;
+
         String sqlQuery = "SELECT * FROM player WHERE uuid = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sqlQuery)) {
             stmt.setString(1, id.toString());
