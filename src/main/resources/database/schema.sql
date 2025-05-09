@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS `player` (
     `inventory_staff` MEDIUMTEXT DEFAULT NULL,
     `location` MEDIUMTEXT DEFAULT NULL,
     `is_premium` BOOLEAN DEFAULT FALSE,
-    `mode_staff` BOOLEAN DEFAULT FALSE,
-    `mode_staffchat` BOOLEAN DEFAULT FALSE,
+    `is_mode_staff` BOOLEAN DEFAULT FALSE,
+    `is_mode_staffchat` BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (`id_player`)
 );
 
