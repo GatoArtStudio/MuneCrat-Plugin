@@ -10,9 +10,18 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "Gatun" ]
+    branches:
+      - "release"
+      - "develop"
+      - "hotfix"
+      - "feature/*"
   pull_request:
-    branches: [ "Gatun" ]
+    branches:
+      - "release"
+      - "develop"
+      - "hotfix"
+      - "feature/*"
+
 
 jobs:
   build:
