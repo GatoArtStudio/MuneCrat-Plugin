@@ -21,6 +21,8 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
 
+import java.time.LocalDateTime;
+
 
 public class HandlerLoginPlayer implements Listener {
     // DAO for accessing player data
@@ -63,6 +65,17 @@ public class HandlerLoginPlayer implements Listener {
         // Handle player login event
         Player player = event.getPlayer();
         LoggerCustom.debug("Player login: " + player.getName());
+
+        PlayerModel playerConfig = playerDAO.readByMinecraftName(player.getName());
+
+        if (playerConfig != null) {
+            if (playerConfig.getUuid() == null) {
+                playerConfig.setUuid(event.getPlayer().getUniqueId());
+            }
+            playerConfig.setActive(true);
+            playerConfig.setIp(player.getAddress().getAddress().getHostAddress());
+            playerDAO.update(playerConfig);
+        }
     }
 
     /**
@@ -180,6 +193,8 @@ public class HandlerLoginPlayer implements Listener {
         if (playerConfig == null) return;
 
         playerConfig.setLocation(PlayerHelper.serializeLocation(event.getPlayer().getLocation()));
+        playerConfig.setLogoutAt(LocalDateTime.now());
+        playerConfig.setActive(false);
         playerDAO.update(playerConfig);
     }
 

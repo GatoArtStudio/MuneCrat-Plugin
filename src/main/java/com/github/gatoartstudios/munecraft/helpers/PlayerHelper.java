@@ -11,13 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.geysermc.floodgate.api.FloodgateApi;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -108,7 +108,7 @@ public class PlayerHelper {
         return new Location(Bukkit.getWorld(UUID.fromString(parts[3])), x, y, z);
     }
 
-    public static UUID getOfflinePlayerUUID(String playerName) {
+    public static Optional<UUID> getOfflinePlayerUUID(String playerName) {
         // Detectar si es jugador de Floodgate (Bedrock)
         if (isBedrockName(playerName)) {
             // UUID en formato Floodgate (00000000-0000-0000-000X-XXXXXXXXXXXX)
@@ -117,7 +117,7 @@ public class PlayerHelper {
             return generateFloodgateStyleUUID(playerName);
         } else {
             // Estilo Java Offline
-            return UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(StandardCharsets.UTF_8));
+            return Optional.of(UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(StandardCharsets.UTF_8)));
         }
     }
 
@@ -126,7 +126,7 @@ public class PlayerHelper {
         return name.startsWith(".");
     }
 
-    private static UUID generateFloodgateStyleUUID(String playerName) {
+    private static Optional<UUID> generateFloodgateStyleUUID(String playerName) {
 
         String url = String.format(ENDPOINT_GEYSERMC_GET_ID, playerName);
 
@@ -139,7 +139,7 @@ public class PlayerHelper {
         try (Response response = HTTP_CLIENT.newCall(request).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
                 LoggerCustom.error("Error while getting Floodgate UUID: " + response);
-                return null;
+                return Optional.empty();
             }
 
             String json = response.body().string();
@@ -147,12 +147,12 @@ public class PlayerHelper {
             String dashedId = withDashes(uuidResponseModel.getId());
 
             LoggerCustom.info("Floodgate UUID: " + dashedId);
-            return UUID.fromString(dashedId);
+            return Optional.of(UUID.fromString(dashedId));
 
         } catch (IOException e) {
             LoggerCustom.error("Error while getting Floodgate UUID: " + e.getMessage());
             EventDispatcher.dispatchAlert("Error while getting Floodgate UUID: " + e.getMessage());
-            return null;
+            return Optional.empty();
         }
     }
 

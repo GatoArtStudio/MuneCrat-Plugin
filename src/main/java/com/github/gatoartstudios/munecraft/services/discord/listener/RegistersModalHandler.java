@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class RegistersModalHandler extends ListenerAdapter {
@@ -110,19 +111,27 @@ public class RegistersModalHandler extends ListenerAdapter {
         try {
 
             PlayerModel playerData = playerDAO.readByMinecraftName(userName);
-            UUID uuidGenerated = PlayerHelper.getOfflinePlayerUUID(userName);
+            Optional<UUID> uuidGenerated = PlayerHelper.getOfflinePlayerUUID(userName);
 
-            if (uuidGenerated == null) return false;
 
             LoggerCustom.debug("UUID Offline Player: " + uuidGenerated + " Name: " + userName);
 
             if (playerData == null) {
-                playerDAO.create(
-                        new PlayerModel(
-                                uuidGenerated,
-                                userName
-                        )
-                );
+                UUID uuid = uuidGenerated.orElse(null);
+                if (uuid != null) {
+                    playerDAO.create(
+                            new PlayerModel(
+                                    uuidGenerated.get(),
+                                    userName
+                            )
+                    );
+                } else {
+                    playerDAO.create(
+                            new PlayerModel(
+                                    userName
+                            )
+                    );
+                }
             }
 
             userDiscordDAO.create(
