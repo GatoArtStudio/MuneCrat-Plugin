@@ -123,6 +123,8 @@ ALTER TABLE user_guild_discord
 ALTER TABLE player
     ADD UNIQUE (minecraft_name, uuid);
 
+CREATE INDEX idx_player_uuid ON player(uuid);
+
 ALTER TABLE user_discord
     ADD FOREIGN KEY (minecraft_name) REFERENCES player(minecraft_name);
 
