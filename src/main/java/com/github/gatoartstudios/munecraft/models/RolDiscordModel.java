@@ -4,14 +4,14 @@ public class RolDiscordModel {
     private long idRol;
     private String name;
     private long guildId;
-    private Boolean isAdmin = false;
-    private Boolean isBuilder = false;
-    private Boolean isMod = false;
-    private Boolean isDevelopment = false;
-    private Boolean isHelper = false;
-    private Boolean isVip = false;
-    private Boolean isBooter = false;
-    private Boolean isVerified = false;
+    private boolean admin = false;
+    private boolean builder = false;
+    private boolean mod = false;
+    private boolean development = false;
+    private boolean helper = false;
+    private boolean vip = false;
+    private boolean booter = false;
+    private boolean verified = false;
 
     public RolDiscordModel() {
     }
@@ -46,67 +46,67 @@ public class RolDiscordModel {
         this.guildId = guildId;
     }
 
-    public Boolean getAdmin() {
-        return isAdmin;
+    public boolean isAdmin() {
+        return admin;
     }
 
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
-    public Boolean getBuilder() {
-        return isBuilder;
+    public boolean isBuilder() {
+        return builder;
     }
 
-    public void setBuilder(Boolean builder) {
-        isBuilder = builder;
+    public void setBuilder(boolean builder) {
+        this.builder = builder;
     }
 
-    public Boolean getMod() {
-        return isMod;
+    public boolean isMod() {
+        return mod;
     }
 
-    public void setMod(Boolean mod) {
-        isMod = mod;
+    public void setMod(boolean mod) {
+        this.mod = mod;
     }
 
-    public Boolean getDevelopment() {
-        return isDevelopment;
+    public boolean isDevelopment() {
+        return development;
     }
 
-    public void setDevelopment(Boolean development) {
-        isDevelopment = development;
+    public void setDevelopment(boolean development) {
+        this.development = development;
     }
 
-    public Boolean getHelper() {
-        return isHelper;
+    public boolean isHelper() {
+        return helper;
     }
 
-    public void setHelper(Boolean helper) {
-        isHelper = helper;
+    public void setHelper(boolean helper) {
+        this.helper = helper;
     }
 
-    public Boolean getVip() {
-        return isVip;
+    public boolean isVip() {
+        return vip;
     }
 
-    public void setVip(Boolean vip) {
-        isVip = vip;
+    public void setVip(boolean vip) {
+        this.vip = vip;
     }
 
-    public Boolean getBooter() {
-        return isBooter;
+    public boolean isBooter() {
+        return booter;
     }
 
-    public void setBooter(Boolean booter) {
-        isBooter = booter;
+    public void setBooter(boolean booter) {
+        this.booter = booter;
     }
 
-    public Boolean getVerified() {
-        return isVerified;
+    public boolean isVerified() {
+        return verified;
     }
 
-    public void setVerified(Boolean verified) {
-        isVerified = verified;
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }
