@@ -58,10 +58,10 @@ public class StaffCommand implements CommandExecutor {
                     player.getUniqueId(),
                     player.getName(),
                     Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress(),
-                    PlayerHelper.serializeInventory(player),
-                    null,
-                    true
+                    PlayerHelper.serializeInventory(player)
             );
+
+            playerData.setModeStaff(true);
 
             mySQLPlayerDAO.create(playerData);
 
@@ -80,9 +80,9 @@ public class StaffCommand implements CommandExecutor {
         }
 
         // If the player has permission, toggle their staff mode
-        if (playerModel.getStaffMode()) {
+        if (playerModel.isModeStaff()) {
             // This block is to disable staff mode
-            playerModel.setStaffMode(false);
+            playerModel.setModeStaff(false);
             if (player.isOp()) {
                 player.setOp(false);
             }
@@ -114,7 +114,7 @@ public class StaffCommand implements CommandExecutor {
 
         } else {
             // This block is to enable staff mode
-            playerModel.setStaffMode(true);
+            playerModel.setModeStaff(true);
             if (!player.isOp() && player.hasPermission("munecraft.staff.op")) {
                 player.setOp(true);
             }
