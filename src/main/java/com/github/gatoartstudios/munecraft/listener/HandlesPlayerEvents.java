@@ -70,7 +70,7 @@ public class HandlesPlayerEvents implements Listener {
         if (playerData == null) return;
 
         // If the player is not in staff chat mode, we do nothing
-        if (!playerData.getStaffChatMode()) return;
+        if (!playerData.isModeStaffChat()) return;
 
         // Cancel the event to prevent the player from sending the message
         event.setCancelled(true);

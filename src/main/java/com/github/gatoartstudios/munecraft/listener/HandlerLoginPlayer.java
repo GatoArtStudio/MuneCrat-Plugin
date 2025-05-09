@@ -179,7 +179,7 @@ public class HandlerLoginPlayer implements Listener {
 
         if (playerConfig == null) return;
 
-        playerConfig.setUltimateLocation(PlayerHelper.serializeLocation(event.getPlayer().getLocation()));
+        playerConfig.setLocation(PlayerHelper.serializeLocation(event.getPlayer().getLocation()));
         playerDAO.update(playerConfig);
     }
 
