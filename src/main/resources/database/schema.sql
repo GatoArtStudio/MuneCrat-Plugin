@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS `user_guild_discord` (
 CREATE TABLE IF NOT EXISTS `grave` (
     `id_grave` INT NOT NULL AUTO_INCREMENT,
     `uuid` VARCHAR(36) NOT NULL,
-    `respawn_here` TINYINT(1) NOT NULL,
-    `grave_public` TINYINT(1) NOT NULL,
+    `is_respawn_here` BOOLEAN DEFAULT FALSE,
+    `is_grave_public` BOOLEAN DEFAULT TRUE,
     `grave_duration` INT NOT NULL,
     `grave_location` MEDIUMTEXT NOT NULL,
     `grave_inventory` MEDIUMTEXT NOT NULL,
