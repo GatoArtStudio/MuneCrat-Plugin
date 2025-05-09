@@ -4,86 +4,61 @@ import java.util.UUID;
 import java.time.LocalDateTime;
 
 public class PlayerModel {
-    private UUID uuid;
+    private Long idPlayer;
+    private UUID uuid = null;
     private String minecraftName;
     private String ip = null;
+    private LocalDateTime loginAt = null;
+    private LocalDateTime logoutAt = null;
+    private boolean isActive = false;
     private String inventory = null;
     private String inventoryStaff = null;
-    private Boolean StaffMode = false;
-    private Boolean isPremium = false;
-    private LocalDateTime lastLogin = null;
-    private Boolean staffChatMode = false;
-    private String ultimateLocation = null;
+    private String location = null;
+    private boolean isPremium = false;
+    private boolean modeStaff = false;
+    private boolean modeStaffChat = false;
 
-    public PlayerModel(UUID uuid, String minecraftName, String ip, String inventory, String inventoryStaff) {
-        this.uuid = uuid;
+    public PlayerModel(String minecraftName) {
         this.minecraftName = minecraftName;
-        this.ip = ip;
-        this.inventory = inventory;
-        this.inventoryStaff = inventoryStaff;
     }
 
-    public PlayerModel(UUID uuid, String minecraftName, String ip, String inventory, String inventoryStaff, Boolean StaffMode) {
+    public PlayerModel(UUID uuid, String minecraftName, String ip, LocalDateTime loginAt, LocalDateTime logoutAt, boolean isActive, String inventory, String inventoryStaff, String location, boolean isPremium, boolean modeStaff, boolean modeStaffChat) {
         this.uuid = uuid;
         this.minecraftName = minecraftName;
         this.ip = ip;
+        this.loginAt = loginAt;
+        this.logoutAt = logoutAt;
+        this.isActive = isActive;
         this.inventory = inventory;
         this.inventoryStaff = inventoryStaff;
-        this.StaffMode = StaffMode;
-    }
-
-    public PlayerModel(UUID uuid, String minecraftName, String ip, String inventory, String inventoryStaff, Boolean staffMode, Boolean isPremium) {
-        this.uuid = uuid;
-        this.minecraftName = minecraftName;
-        this.ip = ip;
-        this.inventory = inventory;
-        this.inventoryStaff = inventoryStaff;
-        StaffMode = staffMode;
+        this.location = location;
         this.isPremium = isPremium;
+        this.modeStaff = modeStaff;
+        this.modeStaffChat = modeStaffChat;
     }
 
-    public PlayerModel(UUID uuid, String minecraftName, String ip, String inventory, String inventoryStaff, Boolean staffMode, Boolean isPremium, LocalDateTime lastLogin) {
+    public PlayerModel(Long idPlayer, UUID uuid, String minecraftName, String ip, LocalDateTime loginAt, LocalDateTime logoutAt, boolean isActive, String inventory, String inventoryStaff, String location, boolean isPremium, boolean modeStaff, boolean modeStaffChat) {
+        this.idPlayer = idPlayer;
         this.uuid = uuid;
         this.minecraftName = minecraftName;
         this.ip = ip;
+        this.loginAt = loginAt;
+        this.logoutAt = logoutAt;
+        this.isActive = isActive;
         this.inventory = inventory;
         this.inventoryStaff = inventoryStaff;
-        this.StaffMode = staffMode;
+        this.location = location;
         this.isPremium = isPremium;
-        this.lastLogin = lastLogin;
+        this.modeStaff = modeStaff;
+        this.modeStaffChat = modeStaffChat;
     }
 
-    public PlayerModel(UUID uuid, String minecraftName, String ip, String inventory, String inventoryStaff, Boolean staffMode, Boolean isPremium, LocalDateTime lastLogin, Boolean staffChatMode) {
-        this.uuid = uuid;
-        this.minecraftName = minecraftName;
-        this.ip = ip;
-        this.inventory = inventory;
-        this.inventoryStaff = inventoryStaff;
-        this.StaffMode = staffMode;
-        this.isPremium = isPremium;
-        this.lastLogin = lastLogin;
-        this.staffChatMode = staffChatMode;
+    public Long getIdPlayer() {
+        return idPlayer;
     }
 
-    public PlayerModel(UUID uuid, String minecraftName, String ip, String inventory, String inventoryStaff, Boolean staffMode, Boolean isPremium, LocalDateTime lastLogin, Boolean staffChatMode, String ultimateLocation) {
-        this.uuid = uuid;
-        this.minecraftName = minecraftName;
-        this.ip = ip;
-        this.inventory = inventory;
-        this.inventoryStaff = inventoryStaff;
-        StaffMode = staffMode;
-        this.isPremium = isPremium;
-        this.lastLogin = lastLogin;
-        this.staffChatMode = staffChatMode;
-        this.ultimateLocation = ultimateLocation;
-    }
-
-    public PlayerModel(UUID uuid, String minecraftName) {
-        this.uuid = uuid;
-        this.minecraftName = minecraftName;
-    }
-
-    public PlayerModel() {
+    public void setIdPlayer(Long idPlayer) {
+        this.idPlayer = idPlayer;
     }
 
     public UUID getUuid() {
@@ -110,6 +85,30 @@ public class PlayerModel {
         this.ip = ip;
     }
 
+    public LocalDateTime getLoginAt() {
+        return loginAt;
+    }
+
+    public void setLoginAt(LocalDateTime loginAt) {
+        this.loginAt = loginAt;
+    }
+
+    public LocalDateTime getLogoutAt() {
+        return logoutAt;
+    }
+
+    public void setLogoutAt(LocalDateTime logoutAt) {
+        this.logoutAt = logoutAt;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     public String getInventory() {
         return inventory;
     }
@@ -126,43 +125,35 @@ public class PlayerModel {
         this.inventoryStaff = inventoryStaff;
     }
 
-    public Boolean getStaffMode() {
-        return StaffMode;
+    public String getLocation() {
+        return location;
     }
 
-    public void setStaffMode(Boolean staffMode) {
-        StaffMode = staffMode;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public Boolean getPremium() {
+    public boolean isPremium() {
         return isPremium;
     }
 
-    public void setPremium(Boolean premium) {
+    public void setPremium(boolean premium) {
         isPremium = premium;
     }
 
-    public LocalDateTime getLastLogin() {
-        return lastLogin;
+    public boolean isModeStaff() {
+        return modeStaff;
     }
 
-    public void setLastLogin(LocalDateTime lastLogin) {
-        this.lastLogin = lastLogin;
+    public void setModeStaff(boolean modeStaff) {
+        this.modeStaff = modeStaff;
     }
 
-    public Boolean getStaffChatMode() {
-        return staffChatMode;
+    public boolean isModeStaffChat() {
+        return modeStaffChat;
     }
 
-    public void setStaffChatMode(Boolean staffChatMode) {
-        this.staffChatMode = staffChatMode;
-    }
-
-    public String getUltimateLocation() {
-        return ultimateLocation;
-    }
-
-    public void setUltimateLocation(String ultimateLocation) {
-        this.ultimateLocation = ultimateLocation;
+    public void setModeStaffChat(boolean modeStaffChat) {
+        this.modeStaffChat = modeStaffChat;
     }
 }
