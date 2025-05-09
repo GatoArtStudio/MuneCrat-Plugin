@@ -10,6 +10,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,7 +57,18 @@ public class MySQLPlayerDAOTest {
         );
 
         PlayerModel model3 = new PlayerModel(
-                "test_player3"
+                UUID.randomUUID(),
+                "test_player3",
+                "1.1.1.1",
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                false,
+                "inventory_staff",
+                "location",
+                "lobby",
+                true,
+                true,
+                true
         );
 
         dao.create(model);
