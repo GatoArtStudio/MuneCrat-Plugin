@@ -22,6 +22,24 @@ public class PlayerModel {
         this.minecraftName = minecraftName;
     }
 
+    public PlayerModel(UUID uuid, String minecraftName) {
+        this.uuid = uuid;
+        this.minecraftName = minecraftName;
+    }
+
+    public PlayerModel(UUID uuid, String minecraftName, String ip) {
+        this.uuid = uuid;
+        this.minecraftName = minecraftName;
+        this.ip = ip;
+    }
+
+    public PlayerModel(UUID uuid, String minecraftName, String ip, String inventory) {
+        this.uuid = uuid;
+        this.minecraftName = minecraftName;
+        this.ip = ip;
+        this.inventory = inventory;
+    }
+
     public PlayerModel(UUID uuid, String minecraftName, String ip, LocalDateTime loginAt, LocalDateTime logoutAt, boolean active, String inventory, String inventoryStaff, String location, boolean premium, boolean modeStaff, boolean modeStaffChat) {
         this.uuid = uuid;
         this.minecraftName = minecraftName;
