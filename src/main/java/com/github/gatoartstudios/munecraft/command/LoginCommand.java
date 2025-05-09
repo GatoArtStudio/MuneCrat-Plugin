@@ -85,14 +85,14 @@ public class LoginCommand implements CommandExecutor {
                 PlayerModel playerConfig = playerDAO.read(player.getUniqueId());
 
                 if (playerConfig != null) {
-                    playerConfig.setLastLogin(java.time.LocalDateTime.now());
+                    playerConfig.setLoginAt(java.time.LocalDateTime.now());
                     playerDAO.update(playerConfig);
 
-                    if (playerConfig.getUltimateLocation() != null) {
+                    if (playerConfig.getLocation() != null) {
                         if (Utils.isFolia()) {
-                            player.teleportAsync(PlayerHelper.deserializeLocation(playerConfig.getUltimateLocation()));
+                            player.teleportAsync(PlayerHelper.deserializeLocation(playerConfig.getLocation()));
                         } else {
-                            player.teleport(PlayerHelper.deserializeLocation(playerConfig.getUltimateLocation()));
+                            player.teleport(PlayerHelper.deserializeLocation(playerConfig.getLocation()));
                         }
                     }
                 }
