@@ -105,7 +105,7 @@ public final class Munecraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ServerLoadListener(), this);
         getServer().getPluginManager().registerEvents(new DimensionRestrictor(), this);
         getServer().getPluginManager().registerEvents(new GraveSystema(this), this); // Register GraveSystema with Munecraft instance
-        getServer().getPluginManager().registerEvents(new HandlerLoginPlayer(), this);
+        getServer().getPluginManager().registerEvents(new HandlerLoginPlayer(this), this);
     }
 
     /**

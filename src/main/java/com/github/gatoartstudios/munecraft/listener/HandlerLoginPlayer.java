@@ -1,5 +1,6 @@
 package com.github.gatoartstudios.munecraft.listener;
 
+import com.github.gatoartstudios.munecraft.Munecraft;
 import com.github.gatoartstudios.munecraft.databases.mysql.DAO.MySQLPlayerDAO;
 import com.github.gatoartstudios.munecraft.databases.mysql.DAO.MySQLUserDiscordDAO;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
@@ -11,7 +12,9 @@ import com.github.gatoartstudios.munecraft.shared.PlayerLoginState;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,7 +32,12 @@ public class HandlerLoginPlayer implements Listener {
     private final MySQLPlayerDAO playerDAO = new MySQLPlayerDAO();
     // DAO for accessing Discord user data
     private final MySQLUserDiscordDAO userDiscordDAO = new MySQLUserDiscordDAO();
+    private final Munecraft plugin;
     private final String MESSAGE_NOT_LOGGED = "Primero debe loguearse en el servidor, usa /login contrasena.";
+
+    public HandlerLoginPlayer(Munecraft plugin) {
+        this.plugin = plugin;
+    }
 
     /**
     * This event fires before the user logs in, or even connects to the server.
@@ -94,7 +102,14 @@ public class HandlerLoginPlayer implements Listener {
 
         // Move the player to the spawn location
         if (Utils.isFolia()) {
-            player.teleportAsync(player.getWorld().getSpawnLocation());
+            try {
+                Location spawnLocation = player.getWorld().getSpawnLocation();
+                Bukkit.getRegionScheduler().runDelayed(plugin, spawnLocation, task -> {
+                    player.teleportAsync(spawnLocation);
+                }, 10L);
+            } catch (Exception e) {
+                LoggerCustom.error("Error teleporting player to spawn location: " + e.getMessage());
+            }
         } else {
             player.teleport(player.getWorld().getSpawnLocation());
         }
