@@ -183,7 +183,7 @@ public class HandlesSystemEvents extends EventListener {
                 .setColor(Color.MAGENTA)
                 .addField("Player", player.getName(), false)
                 .addField("UUID", player.getUniqueId().toString(), false)
-                .addField("IP", "||" + Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress() + "||", false)
+                .addField("IP", player.getAddress() != null ? player.getAddress().getAddress().getHostAddress() : "Desconocido", false)
                 .addField("Location", "X: " + player.getLocation().getX() + " Y: " + player.getLocation().getY() + " Z: " + player.getLocation().getZ(), false)
                 .addField("World", player.getWorld().getName(), false);
 
@@ -246,7 +246,7 @@ public class HandlesSystemEvents extends EventListener {
                 .setColor(Color.RED)
                 .addField("Player", player.getName(), false)
                 .addField("UUID", player.getUniqueId().toString(), false)
-                .addField("IP", "||" + Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress() + "||", false)
+                .addField("IP", player.getAddress() != null ? player.getAddress().getAddress().getHostAddress() : "Desconocido", false)
                 .addField("Location","X: " + player.getLocation().getX() + " Y: " + player.getLocation().getY() + " Z: " + player.getLocation().getZ() , false)
                 .addField("World", player.getWorld().getName(), false);
 

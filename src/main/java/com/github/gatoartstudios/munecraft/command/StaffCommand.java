@@ -57,7 +57,7 @@ public class StaffCommand implements CommandExecutor {
             PlayerModel playerData = new PlayerModel(
                     player.getUniqueId(),
                     player.getName(),
-                    Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress(),
+                    player.getAddress() != null ? player.getAddress().getAddress().getHostAddress() : null,
                     PlayerHelper.serializeInventory(player)
             );
 

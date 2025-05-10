@@ -73,7 +73,7 @@ public class HandlerLoginPlayer implements Listener {
                 playerConfig.setUuid(event.getPlayer().getUniqueId());
             }
             playerConfig.setActive(true);
-            playerConfig.setIp(player.getAddress().getAddress().getHostAddress());
+            playerConfig.setIp(player.getAddress() != null ? player.getAddress().getAddress().getHostAddress() : null);
             playerDAO.update(playerConfig);
         }
     }

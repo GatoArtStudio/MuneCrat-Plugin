@@ -43,7 +43,7 @@ public class StaffChatCommand implements CommandExecutor {
             PlayerModel playerConfig = new PlayerModel(
                     player.getUniqueId(),
                     player.getName(),
-                    Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress(),
+                    player.getAddress() != null ? player.getAddress().getAddress().getHostAddress() : null,
                     PlayerHelper.serializeInventory(player)
             );
 
