@@ -1,5 +1,7 @@
 package com.github.gatoartstudios.munecraft.databases.mysql;
 
+import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,14 +13,16 @@ public class DBBuilderMySQL {
     public static void executeSqlFileFromResources(Connection connection, String resourcePath) {
         try (InputStream inputStream = DBBuilderMySQL.class.getClassLoader().getResourceAsStream(resourcePath)) {
             if (inputStream == null) {
-                throw new IllegalArgumentException("SQL file not found in resources: " + resourcePath);
+                LoggerCustom.error("SQL file not found in resources: " + resourcePath);
+                return;
             }
 
             String sqlContent;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 sqlContent = reader.lines().collect(Collectors.joining("\n"));
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                LoggerCustom.error("Error in build database: " + e.getMessage());
+                return;
             }
 
             String[] sqlStatements = sqlContent.split(";");
@@ -27,12 +31,17 @@ public class DBBuilderMySQL {
                 for (String stmt : sqlStatements) {
                     stmt = stmt.trim();
                     if (!stmt.isEmpty()) {
-                        statement.execute(stmt + ";");
+                        try {
+                            statement.execute(stmt + ";");
+                        } catch (Exception e) {
+                            LoggerCustom.warning("Error executing statement: " + stmt);
+                            LoggerCustom.warning("SQL Error: " + e.getMessage());
+                        }
                     }
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            LoggerCustom.error("Error in build database: " + e.getMessage());
         }
     }
 }
