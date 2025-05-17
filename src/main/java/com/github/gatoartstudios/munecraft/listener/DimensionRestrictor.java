@@ -28,9 +28,8 @@ public class DimensionRestrictor implements Listener {
         if (event.isCancelled()) return;
 
         // Verify that the entity is a player before proceeding
-        if (!(event.getEntity() instanceof Player)) return;
+        if (!(event.getEntity() instanceof Player player)) return;
 
-        Player player = (Player) event.getEntity();
         Material portalBlock = event.getLocation().getBlock().getType();
 
         // Block access based on dimension
