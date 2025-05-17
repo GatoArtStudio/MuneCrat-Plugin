@@ -157,7 +157,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.70</version>
+            <version>148</version>
         </dependency>
         <!--    Use of MySQL database connections    -->
         <dependency>
