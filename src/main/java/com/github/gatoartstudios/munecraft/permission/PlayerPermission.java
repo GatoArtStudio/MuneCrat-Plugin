@@ -4,6 +4,8 @@ import com.github.gatoartstudios.munecraft.core.interfaces.Permission;
 
 public enum PlayerPermission implements Permission {
     TRASH("munecraft.trash"),
+    TRASH_HAND("munecraft.trash.hand"),
+    TRASH_MENU("munecraft.trash.menu"),
     GRAVE_SAVEINVENTORY("munecraft.grave.saveinventory"),
     GRAVE_PUBLIC("munecraft.grave.public"),
     GRAVE_DURATION("munecraft.grave.duration"),

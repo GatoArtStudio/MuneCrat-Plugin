@@ -19,6 +19,9 @@ Plugin desarrollador para el servidor de Minecraft MuñeCraft, perteneciente a l
 - `munecraft.grave.duration.3`: Establece la duración de la tumba a 3 horas.
 - `munecraft.grave.duration.4`: Establece la duración de la tumba a 4 horas.
 - `munecraft.grave.duration.5`: Establece la duración de la tumba a 5 horas.
+- `munecraft.trash`: Permite usar el sistema de basura.
+- `munecraft.trash.hand`: Permite usar el sistema de basura con la mano.
+- `munecraft.trash.menu`: Permite usar el menú de basura.
 
 ### Comandos
 
@@ -26,6 +29,8 @@ Plugin desarrollador para el servidor de Minecraft MuñeCraft, perteneciente a l
 - `/staff`: Activa o desactiva el modo staff.
 - `/staffchat`: Activa o desactiva el chat de staff.
 - `/login`: Inicia sesión en el servidor.
+- `/trash`: Abre el sistema de basura.
+- `/trash hand`: Usa el sistema de basura para el ítem en mano.
 - `/graveModels`: Comando relacionado con el sistema de tumbas.
 
 ### Comandos del Bot de Discord
@@ -58,3 +63,4 @@ Plugin desarrollador para el servidor de Minecraft MuñeCraft, perteneciente a l
 - `/admin get log_user_verified`: Retorna el canal de logs de usuarios verificados.
 
 Consulta los términos y políticas de uso en: https://gatoartstudio.art.
+
