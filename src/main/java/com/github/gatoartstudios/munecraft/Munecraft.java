@@ -13,6 +13,9 @@ import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
 import com.github.gatoartstudios.munecraft.listener.*;
 import com.github.gatoartstudios.munecraft.services.discord.DiscordBot;
 import com.github.gatoartstudios.munecraft.services.ReadLog;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -100,13 +103,17 @@ public final class Munecraft extends JavaPlugin {
      */
     void registerEvents() {
         // Logs all plugin events, necessary to monitor game events
-        getServer().getPluginManager().registerEvents(new HandlesMinecraftEvents(), this);
-        getServer().getPluginManager().registerEvents(new HandlesPlayerEvents(this), this);
-        getServer().getPluginManager().registerEvents(new ServerLoadListener(), this);
-        getServer().getPluginManager().registerEvents(new DimensionRestrictor(), this);
-        getServer().getPluginManager().registerEvents(new GraveSystema(this), this); // Register GraveSystema with Munecraft instance
-        getServer().getPluginManager().registerEvents(new HandlerLoginPlayer(this), this);
-        getServer().getPluginManager().registerEvents(trashMenu, this);
+        registerEvent(new HandlesMinecraftEvents());
+        registerEvent(new HandlesPlayerEvents(this));
+        registerEvent(new ServerLoadListener());
+        registerEvent(new DimensionRestrictor());
+        registerEvent(new GraveSystema(this));
+        registerEvent(new HandlerLoginPlayer(this));
+        registerEvent(trashMenu);
+    }
+
+    void registerEvent(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, this);
     }
 
     /**
@@ -114,13 +121,21 @@ public final class Munecraft extends JavaPlugin {
      */
     void registerCommands() {
         // Records all plugin commands, necessary to monitor game events
-        Objects.requireNonNull(getCommand("development")).setExecutor(new DevelopmentCommand(this));
-        Objects.requireNonNull(getCommand("staff")).setExecutor(new StaffCommand(this));
-        Objects.requireNonNull(getCommand("staffchat")).setExecutor(new StaffChatCommand(this));
-        Objects.requireNonNull(getCommand("login")).setExecutor(new LoginCommand());
-        TrashCommand trashCommand = new TrashCommand(this);
-        Objects.requireNonNull(getCommand("trash")).setExecutor(trashCommand);
-        Objects.requireNonNull(getCommand("trash")).setTabCompleter(trashCommand);
+        registerCommand("development", new DevelopmentCommand(this));
+        registerCommand("staff", new StaffCommand(this));
+        registerCommand("staffchat", new StaffChatCommand(this));
+        registerCommand("login", new LoginCommand());
+        registerCommand("trash", new TrashCommand(this));
+        registerCommand("furnace", new FurnaceCommand());
+    }
+
+    void registerCommand(String command, CommandExecutor commandExecutor) {
+        Objects.requireNonNull(getCommand(command)).setExecutor(commandExecutor);
+    }
+
+    void registerCommand(String command, TabExecutor tabExecutor) {
+        Objects.requireNonNull(getCommand(command)).setExecutor(tabExecutor);
+        Objects.requireNonNull(getCommand(command)).setTabCompleter(tabExecutor);
     }
 
     /**
