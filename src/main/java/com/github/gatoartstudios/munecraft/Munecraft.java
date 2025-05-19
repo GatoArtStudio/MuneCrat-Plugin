@@ -118,7 +118,9 @@ public final class Munecraft extends JavaPlugin {
         Objects.requireNonNull(getCommand("staff")).setExecutor(new StaffCommand(this));
         Objects.requireNonNull(getCommand("staffchat")).setExecutor(new StaffChatCommand(this));
         Objects.requireNonNull(getCommand("login")).setExecutor(new LoginCommand());
-        Objects.requireNonNull(getCommand("trash")).setExecutor(new TrashCommand(this));
+        TrashCommand trashCommand = new TrashCommand(this);
+        Objects.requireNonNull(getCommand("trash")).setExecutor(trashCommand);
+        Objects.requireNonNull(getCommand("trash")).setTabCompleter(trashCommand);
     }
 
     /**
