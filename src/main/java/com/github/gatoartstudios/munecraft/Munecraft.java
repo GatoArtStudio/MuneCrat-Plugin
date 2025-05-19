@@ -1,9 +1,6 @@
 package com.github.gatoartstudios.munecraft;
 
-import com.github.gatoartstudios.munecraft.command.DevelopmentCommand;
-import com.github.gatoartstudios.munecraft.command.LoginCommand;
-import com.github.gatoartstudios.munecraft.command.StaffChatCommand;
-import com.github.gatoartstudios.munecraft.command.StaffCommand;
+import com.github.gatoartstudios.munecraft.command.*;
 import com.github.gatoartstudios.munecraft.config.ConfigManager;
 import com.github.gatoartstudios.munecraft.core.commands.ServiceCommand;
 import com.github.gatoartstudios.munecraft.core.event.EventDispatcher;
@@ -11,6 +8,7 @@ import com.github.gatoartstudios.munecraft.databases.mysql.DBBuilderMySQL;
 import com.github.gatoartstudios.munecraft.databases.DatabaseManager;
 import com.github.gatoartstudios.munecraft.databases.mysql.DAO.MySQLGraveDAO;
 import com.github.gatoartstudios.munecraft.databases.mysql.DAO.MySQLPlayerDAO;
+import com.github.gatoartstudios.munecraft.gui.TrashMenu;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
 import com.github.gatoartstudios.munecraft.listener.*;
 import com.github.gatoartstudios.munecraft.services.discord.DiscordBot;
@@ -34,6 +32,7 @@ public final class Munecraft extends JavaPlugin {
     private EventsTowardsMinecraft  eventsTowardsMinecraft;
     private MySQLPlayerDAO playerDAO;
     private MySQLGraveDAO graveDAO;
+    private TrashMenu trashMenu;
 
     @Override
     public void onLoad() {
@@ -64,6 +63,7 @@ public final class Munecraft extends JavaPlugin {
         // This class is responsible for handling most plugin events, very important
         handlesSystemEvents = new HandlesSystemEvents(this);
         eventsTowardsMinecraft = new EventsTowardsMinecraft();
+        trashMenu = new TrashMenu(this);
 
         // We load the settings from the plugin configuration file
         configManager.init();
@@ -106,6 +106,7 @@ public final class Munecraft extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DimensionRestrictor(), this);
         getServer().getPluginManager().registerEvents(new GraveSystema(this), this); // Register GraveSystema with Munecraft instance
         getServer().getPluginManager().registerEvents(new HandlerLoginPlayer(this), this);
+        getServer().getPluginManager().registerEvents(trashMenu, this);
     }
 
     /**
@@ -117,6 +118,7 @@ public final class Munecraft extends JavaPlugin {
         Objects.requireNonNull(getCommand("staff")).setExecutor(new StaffCommand(this));
         Objects.requireNonNull(getCommand("staffchat")).setExecutor(new StaffChatCommand(this));
         Objects.requireNonNull(getCommand("login")).setExecutor(new LoginCommand());
+        Objects.requireNonNull(getCommand("trash")).setExecutor(new TrashCommand(this));
     }
 
     /**
@@ -149,5 +151,9 @@ public final class Munecraft extends JavaPlugin {
      */
     public MySQLGraveDAO getGraveDAO() {
         return graveDAO;
+    }
+
+    public TrashMenu getTrashMenu() {
+        return trashMenu;
     }
 }
