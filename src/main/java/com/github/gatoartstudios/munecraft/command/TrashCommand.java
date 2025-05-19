@@ -84,7 +84,6 @@ public class TrashCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        if (!commandSender.getName().equalsIgnoreCase("trash")) return Collections.emptyList();
 
         List<String> suggestions = new ArrayList<>();
 
