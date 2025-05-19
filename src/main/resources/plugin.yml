@@ -25,6 +25,10 @@ commands:
   login:
     description: "Logs the player in"
     usage: '/login'
+  trash:
+    description: "Opens the trash"
+    usage: '/trash o /trash hand'
+    permission: munecraft.trash
 
 permissions:
   munecraft.staff:
@@ -50,6 +54,9 @@ permissions:
     default: true
   munecraft.grave.duration:
     description: Allows setting the duration of graves
+    default: true
+  munecraft.trash:
+    description: Allows using the trash
     default: true
   munecraft.grave.duration.1:
     description: Sets grave duration to 1 hour
