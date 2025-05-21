@@ -8,6 +8,7 @@ import com.github.gatoartstudios.munecraft.databases.mysql.DBBuilderMySQL;
 import com.github.gatoartstudios.munecraft.databases.DatabaseManager;
 import com.github.gatoartstudios.munecraft.databases.mysql.DAO.MySQLGraveDAO;
 import com.github.gatoartstudios.munecraft.databases.mysql.DAO.MySQLPlayerDAO;
+import com.github.gatoartstudios.munecraft.gui.FurnaceMenu;
 import com.github.gatoartstudios.munecraft.gui.TrashMenu;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
 import com.github.gatoartstudios.munecraft.listener.*;
@@ -36,6 +37,7 @@ public final class Munecraft extends JavaPlugin {
     private MySQLPlayerDAO playerDAO;
     private MySQLGraveDAO graveDAO;
     private TrashMenu trashMenu;
+    private FurnaceMenu furnaceMenu;
 
     @Override
     public void onLoad() {
@@ -67,6 +69,7 @@ public final class Munecraft extends JavaPlugin {
         handlesSystemEvents = new HandlesSystemEvents(this);
         eventsTowardsMinecraft = new EventsTowardsMinecraft();
         trashMenu = new TrashMenu(this);
+        furnaceMenu = new FurnaceMenu(this);
 
         // We load the settings from the plugin configuration file
         configManager.init();
@@ -126,7 +129,7 @@ public final class Munecraft extends JavaPlugin {
         registerCommand("staffchat", new StaffChatCommand(this));
         registerCommand("login", new LoginCommand());
         registerCommand("trash", new TrashCommand(this));
-        registerCommand("furnace", new FurnaceCommand());
+        registerCommand("furnace", new FurnaceCommand(this));
     }
 
     void registerCommand(String command, CommandExecutor commandExecutor) {
@@ -172,5 +175,9 @@ public final class Munecraft extends JavaPlugin {
 
     public TrashMenu getTrashMenu() {
         return trashMenu;
+    }
+
+    public FurnaceMenu getFurnaceMenu() {
+        return furnaceMenu;
     }
 }
