@@ -2,6 +2,7 @@ package com.github.gatoartstudios.munecraft.command;
 
 import com.github.gatoartstudios.munecraft.Munecraft;
 import com.github.gatoartstudios.munecraft.gui.TrashMenu;
+import com.github.gatoartstudios.munecraft.permission.OperatorPermission;
 import com.github.gatoartstudios.munecraft.permission.PlayerPermission;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -85,12 +86,16 @@ public class TrashCommand implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
 
+        if (!(commandSender instanceof Player player)) return Collections.emptyList();
+
+        if (!player.hasPermission(PlayerPermission.TRASH.getPermission())) return Collections.emptyList();
+
         List<String> suggestions = new ArrayList<>();
 
         // Si aún no se escribió ningún argumento (args.length == 0 o args.length == 1 vacío),
         // ofrecemos los subcomandos disponibles.
         if (strings.length == 1) {
-            if (commandSender.hasPermission(PlayerPermission.TRASH_HAND.getPermission())) {
+            if (player.hasPermission(PlayerPermission.TRASH_HAND.getPermission())) {
                 suggestions.add("hand");
             }
 
