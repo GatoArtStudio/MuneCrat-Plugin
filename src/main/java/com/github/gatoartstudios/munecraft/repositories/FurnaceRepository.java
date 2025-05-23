@@ -1,4 +1,4 @@
-package com.github.gatoartstudios.munecraft.repository;
+package com.github.gatoartstudios.munecraft.repositories;
 
 import com.github.gatoartstudios.munecraft.Munecraft;
 import com.github.gatoartstudios.munecraft.core.event.EventListener;
@@ -47,7 +47,7 @@ public class FurnaceRepository extends EventListener implements ICrud<Integer, F
             try {
                 this.config.save(configFile);
             } catch (Exception e) {
-                LoggerCustom.error("Error while saving config repository: " + e.getMessage());
+                LoggerCustom.error("Error while saving config repositories: " + e.getMessage());
             }
             return;
         }
@@ -95,7 +95,7 @@ public class FurnaceRepository extends EventListener implements ICrud<Integer, F
         try {
             this.config.save(getConfigFile());
         } catch (Exception e) {
-            LoggerCustom.error("Error while saving config repository: " + e.getMessage());
+            LoggerCustom.error("Error while saving config repositories: " + e.getMessage());
         }
     }
 

@@ -2,6 +2,7 @@ package com.github.gatoartstudios.munecraft.command;
 
 import com.github.gatoartstudios.munecraft.Munecraft;
 import com.github.gatoartstudios.munecraft.gui.FurnaceMenu;
+import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
 import com.github.gatoartstudios.munecraft.permission.OperatorPermission;
 import com.github.gatoartstudios.munecraft.permission.PlayerPermission;
 import net.kyori.adventure.text.Component;
@@ -55,7 +56,19 @@ public class FurnaceCommand implements TabExecutor {
                 );
                 return false;
             }
-            Location location = new Location(world, x, y, z);
+
+            // get coordinates of chunk
+            int chunkX = x >> 4;
+            int chunkZ = z >> 4;
+            LoggerCustom.debug("ChunkX: " + chunkX + " ChunkZ: " + chunkZ);
+
+            // get coordinates of block in chunk, then get coordinates of block in world
+            int minBlockX = chunkX << 4;
+            int minBlockZ = chunkZ << 4;
+            int minBlockY = y;
+            LoggerCustom.debug("MinBlockX: " + minBlockX + " MinBlockY: " + minBlockY + " MinBlockZ: " + minBlockZ);
+
+            Location location = new Location(world, minBlockX, minBlockY, minBlockZ);
             furnaceMenu.setLocationOriginWorld(location);
 
             Component clickTp = Component.text("Ir a la posicion de origen")
@@ -71,7 +84,7 @@ public class FurnaceCommand implements TabExecutor {
                     Component.text("Posicion de origen establecida en: " +
                                     location.getBlockX() + ", " +
                                     location.getBlockY() + ", " +
-                                    location.getBlockZ())
+                                    location.getBlockZ() + "\n")
                             .color(TextColor.color(0, 255, 0))
                             .append(clickTp)
             );
@@ -100,19 +113,8 @@ public class FurnaceCommand implements TabExecutor {
             return false;
         }
 
-        if (furnaceMenu.openFurnaceMenu(player)) {
-            player.sendMessage(
-                    Component.text("Horno creado")
-                        .color(TextColor.color(0, 255, 0))
-            );
-            return true;
-        } else {
-            player.sendMessage(
-                    Component.text("No se pudo crear el horno.")
-                            .color(TextColor.color(255, 0, 0))
-            );
-            return false;
-        }
+        furnaceMenu.openFurnaceMenuAsync(player);
+        return true;
     }
 
     @Override
