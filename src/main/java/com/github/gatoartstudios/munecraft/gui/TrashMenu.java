@@ -35,8 +35,18 @@ public class TrashMenu implements Listener {
         if (!(event.getPlayer() instanceof Player player)) return;
         Inventory closeInv = event.getInventory();
 
-        InventoryHolder inventoryHolder = closeInv.getHolder();
-        if (!(inventoryHolder instanceof TrashInventoryHolder trashInventoryHolder)) return;
+        InventoryHolder inventoryHolder = null;
+
+        try {
+            InventoryHolder holder = closeInv.getHolder();
+            if (holder instanceof TrashInventoryHolder) {
+                inventoryHolder = holder;
+            }
+        } catch (IllegalStateException e) {
+            return;
+        }
+
+        if (inventoryHolder == null) return;
 
         ItemStack[] contents = closeInv.getContents();
         int totalItemsRemoved = 0;

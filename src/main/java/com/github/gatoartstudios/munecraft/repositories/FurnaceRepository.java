@@ -1,6 +1,7 @@
 package com.github.gatoartstudios.munecraft.repository;
 
 import com.github.gatoartstudios.munecraft.Munecraft;
+import com.github.gatoartstudios.munecraft.core.event.EventListener;
 import com.github.gatoartstudios.munecraft.core.interfaces.ICrud;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
 import com.github.gatoartstudios.munecraft.models.FurnaceModel;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class FurnaceRepository implements ICrud<Integer, FurnaceModel> {
+public class FurnaceRepository extends EventListener implements ICrud<Integer, FurnaceModel> {
     private final Munecraft plugin;
     private final File configDirectory;
     private Location originWorld;
@@ -27,7 +28,10 @@ public class FurnaceRepository implements ICrud<Integer, FurnaceModel> {
         if (!configDirectory.exists()) {
             configDirectory.mkdirs();
         }
+    }
 
+    @Override
+    public void onLoaded() {
         loadConfig();
     }
 
@@ -170,5 +174,6 @@ public class FurnaceRepository implements ICrud<Integer, FurnaceModel> {
 
     public void setOriginWorld(Location originWorld) {
         this.originWorld = originWorld;
+        saveFurnaces();
     }
 }
