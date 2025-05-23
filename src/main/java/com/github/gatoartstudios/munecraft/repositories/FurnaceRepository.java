@@ -3,6 +3,7 @@ package com.github.gatoartstudios.munecraft.repositories;
 import com.github.gatoartstudios.munecraft.Munecraft;
 import com.github.gatoartstudios.munecraft.core.event.EventListener;
 import com.github.gatoartstudios.munecraft.core.interfaces.ICrud;
+import com.github.gatoartstudios.munecraft.helpers.CoordinatesHelper;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
 import com.github.gatoartstudios.munecraft.models.FurnaceModel;
 import org.bukkit.Location;
@@ -41,7 +42,7 @@ public class FurnaceRepository extends EventListener implements ICrud<Integer, F
 
 
         if (!configFile.exists()) {
-            this.originWorld = plugin.getServer().getWorlds().getFirst().getSpawnLocation();
+            this.originWorld = getDefaultLocation();
             this.config.set("originWorld", originWorld);
 
             try {
@@ -56,7 +57,7 @@ public class FurnaceRepository extends EventListener implements ICrud<Integer, F
         if (this.config.contains("originWorld")) {
             this.originWorld = config.getLocation("originWorld");
         } else {
-            this.originWorld = plugin.getServer().getWorlds().getFirst().getSpawnLocation();
+            this.originWorld = getDefaultLocation();
         }
 
         loadFurnaces();
@@ -175,5 +176,13 @@ public class FurnaceRepository extends EventListener implements ICrud<Integer, F
     public void setOriginWorld(Location originWorld) {
         this.originWorld = originWorld;
         saveFurnaces();
+    }
+
+    public Location getDefaultLocation() {
+        Location locationSpawn = plugin.getServer().getWorlds().getFirst().getSpawnLocation();
+        int[] coordinates = CoordinatesHelper.CoordinatesMinInChunk(locationSpawn.getBlockX(), locationSpawn.getBlockZ());
+        int x = coordinates[0];
+        int z = coordinates[1];
+        return new Location(plugin.getServer().getWorlds().getFirst(), x, -60, z);
     }
 }

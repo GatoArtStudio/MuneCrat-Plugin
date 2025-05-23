@@ -32,8 +32,10 @@ public class FurnaceMenu {
     private Map<Integer, LocationGeneric> locationsIndex = new HashMap<>();
 
     /**
+     * Constructor for FurnaceMenu.
+     * Initializes the FurnaceRepository and builds the matrix if the origin world location is available.
      *
-     * @param plugin
+     * @param plugin The Munecraft plugin instance.
      */
     public FurnaceMenu(Munecraft plugin) {
         this.plugin = plugin;
@@ -44,6 +46,9 @@ public class FurnaceMenu {
         }
     }
 
+    /**
+     * Builds a 3D matrix of possible furnace locations starting from the origin world location.
+     */
     private void buildMatrix() {
         int index = 0;
 
@@ -59,9 +64,10 @@ public class FurnaceMenu {
     }
 
     /**
+     * Opens the player's furnace menu asynchronously.
+     * If the player already has a furnace, opens it; otherwise, finds the next free slot and creates a new furnace.
      *
-     * @param player
-     * @return
+     * @param player The player for whom to open the furnace menu.
      */
     public void openFurnaceMenuAsync(Player player) {
 
@@ -129,8 +135,10 @@ public class FurnaceMenu {
     }
 
     /**
+     * Finds the next available free slot for a furnace and returns it via the callback.
+     * If no slot is available, the callback receives null.
      *
-     * @param callback
+     * @param callback The callback to receive the found Location or null if none is available.
      */
     public void findNextFreeSlot(Consumer<@Nullable Location> callback) {
 
@@ -187,9 +195,11 @@ public class FurnaceMenu {
     }
 
     /**
+     * Removes the furnace at the specified matrix index.
+     * If a furnace exists at the index, it is replaced with air.
      *
-     * @param index
-     * @return
+     * @param index The index in the matrix to remove the furnace from.
+     * @return true if a furnace was removed, false otherwise.
      */
     public boolean removeFurnaceAtIndex(int index) {
 
@@ -207,10 +217,11 @@ public class FurnaceMenu {
     }
 
     /**
+     * Converts a matrix index to a Bukkit Location relative to the origin.
      *
-     * @param index
-     * @param origin
-     * @return
+     * @param index The index in the matrix.
+     * @param origin The origin Location.
+     * @return The corresponding Bukkit Location.
      */
     public Location indexToLocation(int index, Location origin) {// coordenadas relativas 0..15
         if (locationsIndex.isEmpty()) {
@@ -226,9 +237,10 @@ public class FurnaceMenu {
     }
 
     /**
+     * Converts a Bukkit Location to its corresponding matrix index.
      *
-     * @param location
-     * @return
+     * @param location The Bukkit Location to convert.
+     * @return The matrix index, or null if not found.
      */
     public Integer locationToIndex(Location location) {
 
@@ -248,16 +260,18 @@ public class FurnaceMenu {
     }
 
     /**
+     * Gets the origin world location.
      *
-     * @return
+     * @return The origin world Location.
      */
     public Location getLocationOriginWorld() {
         return locationOriginWorld;
     }
 
     /**
+     * Sets the origin world location and rebuilds the matrix.
      *
-     * @param locationOriginWorld
+     * @param locationOriginWorld The new origin world Location.
      */
     public void setLocationOriginWorld(Location locationOriginWorld) {
         this.locationOriginWorld = locationOriginWorld;
