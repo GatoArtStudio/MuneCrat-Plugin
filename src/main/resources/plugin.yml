@@ -33,6 +33,10 @@ commands:
     description: "Opens the furnace"
     usage: '/furnace'
     permission: munecraft.furnace
+  workbench:
+    description: "Opens the workbench"
+    usage: '/workbench'
+    permission: munecraft.workbench
 
 permissions:
   munecraft.staff:
@@ -49,6 +53,9 @@ permissions:
     default: op
   munecraft.furnace:
     description: Allows using the furnace
+    default: false
+  munecraft.workbench:
+    description: Allows using the workbench
     default: false
   munecraft.grave.saveinventory:
     description: Allows saving inventory on death
