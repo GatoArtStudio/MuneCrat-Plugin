@@ -22,6 +22,8 @@ Plugin desarrollador para el servidor de Minecraft MuñeCraft, perteneciente a l
 - `munecraft.trash`: Permite usar el sistema de basura.
 - `munecraft.trash.hand`: Permite usar el sistema de basura con la mano.
 - `munecraft.trash.menu`: Permite usar el menú de basura.
+- `munecraft.furnace`: Permite usar el sistema de hornos.
+- `munecraft.workbench`: Permite usar la mesa de trabajo.
 
 ### Comandos
 
@@ -32,6 +34,8 @@ Plugin desarrollador para el servidor de Minecraft MuñeCraft, perteneciente a l
 - `/trash`: Abre el sistema de basura.
 - `/trash hand`: Usa el sistema de basura para el ítem en mano.
 - `/graveModels`: Comando relacionado con el sistema de tumbas.
+- `/furnace`: Abre el sistema de hornos personales.
+- `/workbench`: Abre una mesa de trabajo personal.
 
 ### Comandos del Bot de Discord
 

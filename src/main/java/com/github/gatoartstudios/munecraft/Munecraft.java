@@ -130,6 +130,7 @@ public final class Munecraft extends JavaPlugin {
         registerCommand("login", new LoginCommand());
         registerCommand("trash", new TrashCommand(this));
         registerCommand("furnace", new FurnaceCommand(this));
+        registerCommand("workbench", new WorkbenchCommand());
     }
 
     void registerCommand(String command, CommandExecutor commandExecutor) {
