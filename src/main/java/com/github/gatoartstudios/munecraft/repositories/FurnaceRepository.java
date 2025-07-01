@@ -5,15 +5,13 @@ import com.github.gatoartstudios.munecraft.core.event.EventListener;
 import com.github.gatoartstudios.munecraft.core.interfaces.ICrud;
 import com.github.gatoartstudios.munecraft.helpers.CoordinatesHelper;
 import com.github.gatoartstudios.munecraft.helpers.LoggerCustom;
+import com.github.gatoartstudios.munecraft.helpers.PlayerHelper;
 import com.github.gatoartstudios.munecraft.models.FurnaceModel;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class FurnaceRepository extends EventListener implements ICrud<Integer, FurnaceModel> {
     private final Munecraft plugin;
@@ -36,14 +34,20 @@ public class FurnaceRepository extends EventListener implements ICrud<Integer, F
         loadConfig();
     }
 
+    @Override
+    public void onDisable() {
+        saveFurnaces();
+    }
+
     private void loadConfig() {
         File configFile = getConfigFile();
         this.config = new YamlConfiguration();
+        this.furnaces = new ArrayList<>();
 
 
         if (!configFile.exists()) {
             this.originWorld = getDefaultLocation();
-            this.config.set("originWorld", originWorld);
+            this.config.set("originWorld", PlayerHelper.serializeLocation(this.originWorld));
 
             try {
                 this.config.save(configFile);
@@ -55,7 +59,7 @@ public class FurnaceRepository extends EventListener implements ICrud<Integer, F
 
         this.config = YamlConfiguration.loadConfiguration(configFile);
         if (this.config.contains("originWorld")) {
-            this.originWorld = config.getLocation("originWorld");
+            this.originWorld = PlayerHelper.deserializeLocation(Objects.requireNonNull(config.getString("originWorld")));
         } else {
             this.originWorld = getDefaultLocation();
         }
@@ -65,32 +69,40 @@ public class FurnaceRepository extends EventListener implements ICrud<Integer, F
 
     private void loadFurnaces() {
         if (this.config.contains("furnaces")) {
-            Object furnacesObj = this.config.get("furnaces");
 
-            if (furnacesObj instanceof List<?> rawList) {
+            List<Map<?, ?>> list_temp = config.getMapList("furnaces");
 
-                List<FurnaceModel> temp = new ArrayList<>();
-                for (Object element : rawList) {
-                    if (element instanceof FurnaceModel) {
-                        temp.add((FurnaceModel) element);
-                    } else {
-                        LoggerCustom.warning("Se encontró un elemento inesperado en 'furnaces': "
-                                + element.getClass().getSimpleName());
-                    }
-                }
+            for (Map<?, ?> furnace : list_temp) {
+                String name = (String) furnace.get("name");
+                UUID uuid = UUID.fromString((String) furnace.get("uuid"));
+                Location location = PlayerHelper.deserializeLocation((String) furnace.get("location"));
+                int index = ((Number) furnace.get("index")).intValue();
 
-                furnaces = temp;
+                FurnaceModel furnaceModel = new FurnaceModel(name, uuid, location, index);
+                furnaces.add(furnaceModel);
             }
+
         }
     }
 
     private void saveFurnaces() {
-        config.set("originWorld", originWorld);
+        config.set("originWorld", PlayerHelper.serializeLocation(this.originWorld));
 
         if (furnaces == null || furnaces.isEmpty()) {
             config.set("furnaces", null);
         } else {
-            config.set("furnaces", furnaces);
+            List<Map<?, ?>> list_furnaces_formatted = new ArrayList<>();
+
+            for (FurnaceModel furnace : furnaces) {
+                Map<String, Object> furnaceMap = new HashMap<>();
+                furnaceMap.put("name", furnace.getName());
+                furnaceMap.put("uuid", furnace.getUuid().toString());
+                furnaceMap.put("location", PlayerHelper.serializeLocation(furnace.getLocation()));
+                furnaceMap.put("index", furnace.getIndex());
+
+                list_furnaces_formatted.add(furnaceMap);
+            }
+            config.set("furnaces", list_furnaces_formatted);
         }
 
         try {

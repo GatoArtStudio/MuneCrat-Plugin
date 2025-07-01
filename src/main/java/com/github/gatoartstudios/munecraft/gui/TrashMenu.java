@@ -42,7 +42,7 @@ public class TrashMenu implements Listener {
             if (holder instanceof TrashInventoryHolder) {
                 inventoryHolder = holder;
             }
-        } catch (IllegalStateException e) {
+        } catch (Throwable e) {
             return;
         }
 
