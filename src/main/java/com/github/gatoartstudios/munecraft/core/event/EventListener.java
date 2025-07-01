@@ -76,6 +76,9 @@ public abstract class EventListener {
         eventManager.addListener(EventType.LOADED, args -> {
             onLoaded();
         });
+        eventManager.addListener(EventType.DISABLE, args -> {
+            onDisable();
+        });
         eventManager.addListener(EventType.EXECUTE_SERVER_COMMAND, args -> {
             String commandToExecute = (String) args[0];
             onExecuteServerCommand(commandToExecute);
@@ -106,6 +109,7 @@ public abstract class EventListener {
     public void onDatabaseReady(DatabaseManager databaseManager) {}
     public void onDatabaseUpdate(DatabaseManager databaseManager) {}
     public void onLoaded() {}
+    public void onDisable() {}
     public void onExecuteServerCommand(String commandToExecute) {}
     public void onExecuteServerCommandResult(Boolean status, String message) {}
     public void onMessageToMinecraft(String message) {}
