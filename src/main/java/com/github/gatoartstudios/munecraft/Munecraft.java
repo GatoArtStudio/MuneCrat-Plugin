@@ -110,7 +110,7 @@ public final class Munecraft extends JavaPlugin {
         registerEvent(new HandlesPlayerEvents(this));
         registerEvent(new ServerLoadListener());
         registerEvent(new DimensionRestrictor());
-        registerEvent(new GraveSystema(this));
+//        registerEvent(new GraveSystema(this));
         registerEvent(new HandlerLoginPlayer(this));
         registerEvent(trashMenu);
     }
