@@ -14,7 +14,7 @@ public class MySQLConnection {
     private final String URL;
     private final SQL sql;
 
-    private final Connection connection;
+    private Connection connection;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     /**
@@ -25,7 +25,7 @@ public class MySQLConnection {
     public MySQLConnection(SQL sql) {
         this.sql = sql;
 
-        URL = "jdbc:mysql://" + sql.getHost() + ":" + sql.getPort() + "/" + sql.getDatabase();
+        this.URL = "jdbc:mysql://" + sql.getHost() + ":" + sql.getPort() + "/" + sql.getDatabase();
         try {
             this.connection = java.sql.DriverManager.getConnection(URL, sql.getUser(), sql.getPassword());
             startKeepAliveTask();
@@ -41,6 +41,7 @@ public class MySQLConnection {
      * @return the connection
      */
     public Connection getConnection() {
+        checkConnection();
         return connection;
     }
 
@@ -50,6 +51,7 @@ public class MySQLConnection {
      */
     private void startKeepAliveTask() {
         Runnable keepAlive = () -> {
+            checkConnection();
             try (Statement stmt = connection.createStatement()) {
                 stmt.execute("SELECT 1");
             } catch (SQLException e) {
@@ -58,5 +60,18 @@ public class MySQLConnection {
         };
 
         scheduledExecutorService.scheduleAtFixedRate(keepAlive, 5, 5, TimeUnit.MINUTES);
+    }
+
+    private synchronized void checkConnection() {
+        try {
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) {
+                EventDispatcher.dispatchAlert("Database connection is not valid or has been closed.");
+                EventDispatcher.dispatchAlert("Attempting to reconnect...");
+                connection = java.sql.DriverManager.getConnection(URL, sql.getUser(), sql.getPassword());
+                EventDispatcher.dispatchAlert("Reconnection successful.");
+            }
+        } catch (SQLException e) {
+            EventDispatcher.dispatchAlert("Error checking database connection: " + e.getMessage());
+        }
     }
 }
