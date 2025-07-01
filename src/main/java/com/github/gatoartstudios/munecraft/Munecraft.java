@@ -98,6 +98,7 @@ public final class Munecraft extends JavaPlugin {
         LoggerCustom.warning("The plugin has been disabled");
         EventDispatcher.dispatchLogging("[Server] The server has been shut down");
 
+        EventDispatcher.dispatchDisable();
         serviceCommand.undo();
     }
 

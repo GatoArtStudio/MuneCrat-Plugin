@@ -69,6 +69,10 @@ public class EventDispatcher {
         eventManager.emit(EventType.LOADED);
     }
 
+    public static void dispatchDisable() {
+        eventManager.emit(EventType.DISABLE);
+    }
+
     public static void dispatchExecuteServerCommand(String commandToExecute) {
         eventManager.emit(EventType.EXECUTE_SERVER_COMMAND, commandToExecute);
     }
